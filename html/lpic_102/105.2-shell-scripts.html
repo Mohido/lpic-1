@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>105.2 Customize or Write Simple Scripts</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">105.2 Customize or Write Simple Scripts</h1>
+</header>
+<h1 id="customize-or-write-simple-scripts">105.2 Customize or Write
+Simple Scripts</h1>
+<p><strong>Weight: 4</strong></p>
+<p><strong>Goal:</strong> Customize existing scripts, or write simple
+new Bash scripts.</p>
+<hr />
+<h2 id="what-is-a-shell-script">1. What is a Shell Script?</h2>
+<p>A <strong>shell script</strong> is a plain text file containing a
+sequence of shell commands. Instead of typing the commands one by one,
+you save them in a file and run that file. The shell reads the file from
+top to bottom and runs each line.</p>
+<p>A minimal script:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello, world&quot;</span></span></code></pre></div>
+<p>To run it:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> chmod +x hello.sh         <span class="co"># make it executable</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./hello.sh                <span class="co"># run it</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span> world</span></code></pre></div>
+<hr />
+<h2 id="the-shebang-line">2. The Shebang Line (<code>#!</code>)</h2>
+<p>The very first line of a script can begin with <code>#!</code>
+followed by the path to an interpreter. This is called the
+<strong>shebang</strong> (or hashbang). It tells the kernel which
+program should run the script.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash         # use Bash</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/sh           # use the system&#39;s POSIX shell</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/python3  # use Python 3</span></span></code></pre></div>
+<p>Key points for the exam:</p>
+<ul>
+<li>The shebang <strong>must be the first line</strong> of the
+file.</li>
+<li>It must start at column 1 (no spaces before <code>#!</code>).</li>
+<li>Without a shebang, the script is run by whatever shell launched it —
+which may not be Bash.</li>
+<li>The path after <code>#!</code> must be the <strong>absolute
+path</strong> to the interpreter.</li>
+</ul>
+<hr />
+<h2 id="script-location-ownership-permissions-and-suid">3. Script
+Location, Ownership, Permissions, and SUID</h2>
+<p>To run a script, the kernel needs:</p>
+<ol type="1">
+<li><strong>Read permission</strong> — so it can read the file.</li>
+<li><strong>Execute permission</strong> — so it knows the file may be
+run.</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> chmod +x myscript.sh        <span class="co"># add execute permission for all</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> chmod 755 myscript.sh       <span class="co"># rwxr-xr-x — owner can edit/run, others can run</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> chmod 700 myscript.sh       <span class="co"># rwx------ — only the owner can do anything</span></span></code></pre></div>
+<h3 id="where-to-put-scripts">Where to put scripts</h3>
+<ul>
+<li><strong><code>~/bin/</code></strong> — personal scripts for one
+user. Many distributions add this to <code>PATH</code> automatically if
+it exists.</li>
+<li><strong><code>/usr/local/bin/</code></strong> — scripts intended for
+all users on the system.</li>
+<li><strong><code>/usr/local/sbin/</code></strong> — system
+administration scripts for root.</li>
+</ul>
+<p>If a directory is in <code>PATH</code>, you can run the script by
+name (<code>myscript.sh</code>). Otherwise, you must give the full or
+relative path (<code>./myscript.sh</code>).</p>
+<h3 id="suid-on-scripts">SUID on scripts</h3>
+<p>The <strong>SUID bit</strong> (<code>chmod u+s</code>) normally makes
+a program run with the privileges of its owner. <strong>Linux
+deliberately ignores SUID on shell scripts</strong> for security reasons
+— setting it has no effect. The exam expects you to know this: do
+<strong>not</strong> rely on SUID for scripts; use <code>sudo</code>
+instead.</p>
+<hr />
+<h2 id="variables-and-quoting-in-scripts">4. Variables and Quoting in
+Scripts</h2>
+<h3 id="defining-and-using-variables">Defining and using variables</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">NAME</span><span class="op">=</span><span class="st">&quot;Alice&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">$NAME</span><span class="st">&quot;</span>           <span class="co"># → Hello, Alice</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">${NAME}</span><span class="st">!&quot;</span>        <span class="co"># braces let you put text directly after</span></span></code></pre></div>
+<p>No spaces around the <code>=</code> sign —
+<code>NAME = "Alice"</code> is a syntax error.</p>
+<h3 id="special-variables">Special variables</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$0</code></td>
+<td>The script’s own name.</td>
+</tr>
+<tr class="even">
+<td><code>$1</code>, <code>$2</code>, …, <code>$9</code></td>
+<td>The first, second, … positional arguments.</td>
+</tr>
+<tr class="odd">
+<td><code>$#</code></td>
+<td>Number of arguments passed.</td>
+</tr>
+<tr class="even">
+<td><code>$@</code></td>
+<td>All arguments as separate words.</td>
+</tr>
+<tr class="odd">
+<td><code>$*</code></td>
+<td>All arguments as a single word.</td>
+</tr>
+<tr class="even">
+<td><code>$?</code></td>
+<td>Exit status of the last command (see section 6).</td>
+</tr>
+<tr class="odd">
+<td><code>$$</code></td>
+<td>PID (process ID) of the current shell.</td>
+</tr>
+<tr class="even">
+<td><code>$!</code></td>
+<td>PID of the last background job.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quoting">Quoting</h3>
+<ul>
+<li><strong>Double quotes <code>"…"</code></strong> — variables and
+command substitution are expanded.</li>
+<li><strong>Single quotes <code>'…'</code></strong> — everything is
+literal, no expansion.</li>
+<li><strong>Backslash <code>\</code></strong> — escape one
+character.</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> NAME=Alice</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;Hello, </span><span class="va">$NAME</span><span class="st">&quot;</span>      <span class="co"># Hello, Alice</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&#39;Hello, $NAME&#39;</span>      <span class="co"># Hello, $NAME</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;Cost: </span><span class="dt">\$</span><span class="st">5&quot;</span>         <span class="co"># Cost: $5</span></span></code></pre></div>
+<hr />
+<h2 id="command-substitution">5. Command Substitution</h2>
+<p>Command substitution runs a command and <strong>inserts its
+output</strong> into another command.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">TODAY</span><span class="op">=</span><span class="va">$(</span><span class="fu">date</span><span class="va">)</span>               <span class="co"># preferred form</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="va">TODAY</span><span class="op">=</span><span class="kw">`</span><span class="fu">date</span><span class="kw">`</span>                <span class="co"># older form, same meaning</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Today is </span><span class="va">$TODAY</span><span class="st">&quot;</span></span></code></pre></div>
+<p>You can use it anywhere a string is expected:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;There are </span><span class="va">$(</span><span class="fu">ls</span> <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span><span class="va">)</span><span class="st"> files here&quot;</span></span></code></pre></div>
+<p>The exam may show either form (<code>$(…)</code> or backticks
+<code>`…`</code>). Both work.</p>
+<hr />
+<h2 id="exit-status-and-testing-return-values">6. Exit Status and
+Testing Return Values</h2>
+<p>Every command returns an <strong>exit status</strong> (also called a
+return code) when it finishes:</p>
+<ul>
+<li><strong>0</strong> means success.</li>
+<li><strong>Any non-zero value</strong> (1–255) means failure or some
+other condition.</li>
+</ul>
+<p>The exit status of the last command is in <code>$?</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls /etc</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span> output ...</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$?</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">0</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls /nope</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">ls:</span> cannot access <span class="st">&#39;/nope&#39;</span>: No such file or directory</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$?</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">2</span></span></code></pre></div>
+<p>A script can return its own exit status using <code>exit</code>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span> 0      <span class="co"># success</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span> 1      <span class="co"># general error</span></span></code></pre></div>
+<p>If <code>exit</code> is omitted, the script returns the status of its
+last command.</p>
+<hr />
+<h2 id="chained-commands">7. Chained Commands: <code>&amp;&amp;</code>,
+<code>||</code>, <code>;</code></h2>
+<p>These connect commands and act on the exit status of the previous
+one.</p>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cmd1 ; cmd2</code></td>
+<td>Run <code>cmd1</code>, then run <code>cmd2</code> regardless.</td>
+</tr>
+<tr class="even">
+<td><code>cmd1 &amp;&amp; cmd2</code></td>
+<td>Run <code>cmd2</code> <strong>only if <code>cmd1</code>
+succeeded</strong> (exit 0).</td>
+</tr>
+<tr class="odd">
+<td><code>cmd1 || cmd2</code></td>
+<td>Run <code>cmd2</code> <strong>only if <code>cmd1</code>
+failed</strong> (non-zero exit).</td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> /tmp/work <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> /tmp/work     <span class="co"># cd only if mkdir worked</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ping</span> <span class="at">-c1</span> host <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;host is down&quot;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> <span class="kw">&amp;&amp;</span> <span class="fu">make</span> install <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;build failed&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="the-test-command-and">8. The <code>test</code> Command and
+<code>[ … ]</code></h2>
+<p><code>test</code> evaluates a condition and returns exit status 0
+(true) or 1 (false). It is the heart of <code>if</code> statements.</p>
+<p>These two lines are <strong>identical</strong>:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-f</span> /etc/passwd</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> /etc/passwd <span class="bu">]</span></span></code></pre></div>
+<p>Note the <strong>spaces inside the brackets</strong> —
+<code>[-f file]</code> is wrong.</p>
+<h3 id="file-tests">File tests</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>True if …</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-e FILE</code></td>
+<td>FILE exists.</td>
+</tr>
+<tr class="even">
+<td><code>-f FILE</code></td>
+<td>FILE exists and is a regular file.</td>
+</tr>
+<tr class="odd">
+<td><code>-d FILE</code></td>
+<td>FILE exists and is a directory.</td>
+</tr>
+<tr class="even">
+<td><code>-r FILE</code></td>
+<td>FILE is readable.</td>
+</tr>
+<tr class="odd">
+<td><code>-w FILE</code></td>
+<td>FILE is writable.</td>
+</tr>
+<tr class="even">
+<td><code>-x FILE</code></td>
+<td>FILE is executable.</td>
+</tr>
+<tr class="odd">
+<td><code>-s FILE</code></td>
+<td>FILE exists and is not empty.</td>
+</tr>
+<tr class="even">
+<td><code>-L FILE</code></td>
+<td>FILE is a symbolic link.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="string-tests">String tests</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>True if …</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-z STRING</code></td>
+<td>STRING is empty (zero length).</td>
+</tr>
+<tr class="even">
+<td><code>-n STRING</code></td>
+<td>STRING is not empty.</td>
+</tr>
+<tr class="odd">
+<td><code>STR1 = STR2</code></td>
+<td>strings are equal.</td>
+</tr>
+<tr class="even">
+<td><code>STR1 != STR2</code></td>
+<td>strings differ.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="numeric-tests">Numeric tests</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>N1 -eq N2</code></td>
+<td>equal</td>
+</tr>
+<tr class="even">
+<td><code>N1 -ne N2</code></td>
+<td>not equal</td>
+</tr>
+<tr class="odd">
+<td><code>N1 -lt N2</code></td>
+<td>less than</td>
+</tr>
+<tr class="even">
+<td><code>N1 -le N2</code></td>
+<td>less than or equal</td>
+</tr>
+<tr class="odd">
+<td><code>N1 -gt N2</code></td>
+<td>greater than</td>
+</tr>
+<tr class="even">
+<td><code>N1 -ge N2</code></td>
+<td>greater than or equal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pitfall:</strong> use <code>-eq</code> for numbers and
+<code>=</code> for strings. Mixing them up is a common exam trap.</p>
+<h3 id="combining-tests">Combining tests</h3>
+<ul>
+<li><code>!</code> — NOT</li>
+<li><code>-a</code> — AND (inside <code>[ ]</code>)</li>
+<li><code>-o</code> — OR (inside <code>[ ]</code>)</li>
+<li><code>&amp;&amp;</code> / <code>||</code> between two separate
+<code>[ ]</code> blocks (preferred):</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="bu">[</span> <span class="ot">-r</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span> <span class="bu">]</span></span></code></pre></div>
+<hr />
+<h2 id="if-statement">9. <code>if</code> Statement</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-f</span> /etc/passwd <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;passwd exists&quot;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> <span class="bu">[</span> <span class="ot">-f</span> /etc/master.passwd <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;BSD-style passwd file&quot;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;no passwd file found&quot;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div>
+<p>Key points:</p>
+<ul>
+<li><code>if</code> must be closed by <code>fi</code>.</li>
+<li><code>then</code> can be on the same line if separated by
+<code>;</code>, otherwise on the next line.</li>
+<li><code>elif</code> and <code>else</code> are optional.</li>
+</ul>
+<hr />
+<h2 id="loops-for-and-while">10. Loops: <code>for</code> and
+<code>while</code></h2>
+<h3 id="for-iterate-over-a-list"><code>for</code> — iterate over a
+list</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> alice bob carol<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">$name</span><span class="st">&quot;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p>Loop over files:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> <span class="pp">*</span>.txt<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Found: </span><span class="va">$f</span><span class="st">&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p>Loop over numbers using <code>seq</code>:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 1 5<span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Number </span><span class="va">$i</span><span class="st">&quot;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p><code>seq</code> generates a sequence of numbers:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> seq 3            <span class="co"># 1 2 3</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> seq 2 5          <span class="co"># 2 3 4 5</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> seq 0 2 10       <span class="co"># 0 2 4 6 8 10 (start, step, end)</span></span></code></pre></div>
+<p>C-style <code>for</code> (Bash only):</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="kw">((</span><span class="va">i</span><span class="op">=</span><span class="dv">1</span><span class="kw">;</span> <span class="va">i</span><span class="op">&lt;=</span><span class="dv">5</span><span class="kw">;</span> <span class="va">i</span><span class="op">++</span><span class="kw">));</span> <span class="cf">do</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="va">$i</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<h3 id="while-loop-while-a-condition-is-true"><code>while</code> — loop
+while a condition is true</h3>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="va">count</span><span class="op">=</span>1</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="bu">[</span> <span class="va">$count</span> <span class="ot">-le</span> 5 <span class="bu">]</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Count is </span><span class="va">$count</span><span class="st">&quot;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">count</span><span class="op">=</span><span class="va">$((count</span> <span class="op">+</span> <span class="dv">1</span><span class="va">))</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p><code>until</code> is the opposite — loops while the condition is
+<strong>false</strong>:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">until</span> <span class="bu">[</span> <span class="va">$count</span> <span class="ot">-gt</span> 5 <span class="bu">]</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">...</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<hr />
+<h2 id="read-get-input-from-the-user">11. <code>read</code> — Get Input
+from the User</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-n</span> <span class="st">&quot;Enter your name: &quot;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">read</span> <span class="va">name</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">$name</span><span class="st">&quot;</span></span></code></pre></div>
+<p>Shortcuts:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">read</span> <span class="at">-p</span> <span class="st">&quot;Enter your name: &quot;</span> <span class="va">name</span>      <span class="co"># built-in prompt</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">read</span> <span class="at">-s</span> <span class="va">password</span>                       <span class="co"># silent input (no echo)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">read</span> <span class="va">first</span> <span class="va">second</span> <span class="va">third</span>                <span class="co"># split input into multiple vars</span></span></code></pre></div>
+<p><code>read</code> is also useful for reading a file line by line:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="bu">read</span> <span class="va">line</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Got: </span><span class="va">$line</span><span class="st">&quot;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span> <span class="op">&lt;</span> /etc/passwd</span></code></pre></div>
+<hr />
+<h2 id="exec-replace-the-current-shell">12. <code>exec</code> — Replace
+the Current Shell</h2>
+<p><code>exec</code> replaces the current shell process with the given
+command. The shell does not return after <code>exec</code> finishes —
+the running script ends.</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span> /usr/bin/python3 myscript.py     <span class="co"># the bash script is replaced by python</span></span></code></pre></div>
+<p>A common use is <strong>redirecting all output of a script</strong>
+to a file:</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">exec</span> <span class="op">&gt;</span> /var/log/myscript.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;this goes into the log file&quot;</span></span></code></pre></div>
+<p>After that <code>exec</code> line, <strong>all</strong> subsequent
+output of the script is sent to the log.</p>
+<hr />
+<h2 id="conditional-mailing-to-the-superuser">13. Conditional Mailing to
+the Superuser</h2>
+<p>A common scripting pattern: when something goes wrong, email
+root.</p>
+<p>The <code>mail</code> command (also called <code>mailx</code> on some
+systems) sends mail from the command line:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Disk is almost full&quot;</span> <span class="kw">|</span> <span class="ex">mail</span> <span class="at">-s</span> <span class="st">&quot;ALERT&quot;</span> root</span></code></pre></div>
+<p>In a script:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$(</span><span class="fu">df</span> / <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;NR==2 {print $5}&#39;</span> <span class="kw">|</span> <span class="fu">tr</span> <span class="at">-d</span> <span class="st">&#39;%&#39;</span><span class="va">)</span> <span class="ot">-gt</span> 90 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Root filesystem is over 90% full&quot;</span> <span class="kw">|</span> <span class="ex">mail</span> <span class="at">-s</span> <span class="st">&quot;Disk Alert&quot;</span> root</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div>
+<ul>
+<li><code>-s</code> sets the subject.</li>
+<li>The body comes from standard input (here, via a pipe).</li>
+<li>This is what the objective means by <strong>“perform conditional
+mailing to the superuser.”</strong></li>
+</ul>
+<hr />
+<h2 id="putting-it-together-a-complete-example">14. Putting It Together
+— A Complete Example</h2>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># backup.sh — back up /home if the destination directory exists</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="va">DEST</span><span class="op">=</span><span class="st">&quot;/backup&quot;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-d</span> <span class="st">&quot;</span><span class="va">$DEST</span><span class="st">&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Destination </span><span class="va">$DEST</span><span class="st"> does not exist&quot;</span> <span class="kw">|</span> <span class="ex">mail</span> <span class="at">-s</span> <span class="st">&quot;Backup failed&quot;</span> root</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">exit</span> 1</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> user <span class="kw">in</span> <span class="va">$(</span><span class="fu">ls</span> /home<span class="va">)</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar</span> <span class="at">-czf</span> <span class="st">&quot;</span><span class="va">$DEST</span><span class="st">/</span><span class="va">${user}</span><span class="st">-</span><span class="va">$(</span><span class="fu">date</span> +%F<span class="va">)</span><span class="st">.tar.gz&quot;</span> <span class="st">&quot;/home/</span><span class="va">$user</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">&quot;Backed up </span><span class="va">$user</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;Failed: </span><span class="va">$user</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">mail</span> <span class="at">-s</span> <span class="st">&quot;Backup error&quot;</span> root</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span> 0</span></code></pre></div>
+<p>This single script touches almost every concept in this objective:
+shebang, variables, <code>if</code>, <code>for</code>, command
+substitution, <code>&amp;&amp;</code>/<code>||</code>, conditional mail,
+and <code>exit</code>.</p>
+<hr />
+<h2 id="quick-reference-files-and-commands-for-the-exam">15. Quick
+Reference: Files and Commands for the Exam</h2>
+<p><strong>Keywords and commands:</strong></p>
+<ul>
+<li><code>for</code></li>
+<li><code>while</code></li>
+<li><code>test</code></li>
+<li><code>if</code></li>
+<li><code>read</code></li>
+<li><code>seq</code></li>
+<li><code>exec</code></li>
+<li><code>||</code></li>
+<li><code>&amp;&amp;</code></li>
+</ul>
+<p><strong>Other things you must know:</strong></p>
+<ul>
+<li>The <code>#!</code> shebang line</li>
+<li>Exit status (<code>$?</code>) and <code>exit N</code></li>
+<li>Command substitution: <code>$(…)</code> and backticks</li>
+<li><code>[ … ]</code> syntax (with required spaces)</li>
+<li>The fact that <strong>SUID is ignored on shell scripts</strong></li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">16. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>What does the first line <code>#!/bin/bash</code>
+do?</strong> It tells the kernel to use <code>/bin/bash</code> to
+interpret the script.</p></li>
+<li><p><strong>A script needs to run only if the previous command
+succeeded. Which operator do you use?</strong> <code>&amp;&amp;</code>.
+For example: <code>cmd1 &amp;&amp; cmd2</code>.</p></li>
+<li><p><strong>What is the exit status of a successful command?</strong>
+<code>0</code>.</p></li>
+<li><p><strong>How do you check if a file exists and is
+readable?</strong> <code>[ -r filename ]</code> (or
+<code>test -r filename</code>).</p></li>
+<li><p><strong>What is the difference between <code>=</code> and
+<code>-eq</code> in a test?</strong> <code>=</code> compares strings;
+<code>-eq</code> compares integers.</p></li>
+<li><p><strong>What does <code>$?</code> contain?</strong> The exit
+status of the most recently executed command.</p></li>
+<li><p><strong>You set SUID on a Bash script. Will it run with the
+owner’s privileges?</strong> No. Linux ignores the SUID bit on shell
+scripts. Use <code>sudo</code> instead.</p></li>
+<li><p><strong>What does <code>$(date)</code> do?</strong> Runs the
+<code>date</code> command and substitutes its output in place.</p></li>
+<li><p><strong>How do you read a line of input from the user into a
+variable named <code>answer</code>?</strong>
+<code>read answer</code>.</p></li>
+<li><p><strong>Write a <code>for</code> loop that prints numbers 1
+through 5 using <code>seq</code>.</strong>
+<code>bash     for i in $(seq 1 5); do echo $i; done</code></p></li>
+<li><p><strong>What is the purpose of
+<code>exec &gt; logfile 2&gt;&amp;1</code> at the top of a
+script?</strong> Redirects all standard output and standard error of the
+script to <code>logfile</code>.</p></li>
+<li><p><strong>Where would you place a script that should be available
+to all users on the system?</strong> <code>/usr/local/bin/</code> (or
+<code>/usr/local/sbin/</code> for admin scripts).</p></li>
+</ol>
+</body>
+</html>

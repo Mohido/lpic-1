@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>107.2 Automate System Administration Tasks by Scheduling Jobs</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">107.2 Automate System Administration Tasks by
+Scheduling Jobs</h1>
+</header>
+<h1 id="automate-system-administration-tasks-by-scheduling-jobs">107.2
+Automate System Administration Tasks by Scheduling Jobs</h1>
+<p><strong>Weight: 4</strong></p>
+<p><strong>Goal:</strong> Use cron or anacron to run jobs at regular
+intervals, and use <code>at</code> to run jobs at a specific time.</p>
+<hr />
+<h2 id="two-kinds-of-scheduling">1. Two Kinds of Scheduling</h2>
+<p>Linux has two distinct scheduling systems. Know the difference:</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>System</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>cron</strong> (and <strong>anacron</strong>)</td>
+<td>Run jobs <strong>repeatedly</strong> on a schedule (every hour,
+every day at 3 a.m., every Monday, etc.).</td>
+</tr>
+<tr class="even">
+<td><strong>at</strong> (and <strong>batch</strong>)</td>
+<td>Run a job <strong>once</strong>, at a specified future time.</td>
+</tr>
+</tbody>
+</table>
+<p>A third tool, <strong>systemd timers</strong>, is a modern
+replacement for both. The exam expects awareness of it.</p>
+<hr />
+<h2 id="cron-how-it-works">2. cron: How It Works</h2>
+<p><strong>cron</strong> is a daemon (<code>crond</code> or
+<code>cron</code>) that wakes up every minute, checks all the system’s
+crontabs, and runs whatever jobs are due. It is the standard way to
+schedule recurring tasks on Linux.</p>
+<p>There are two kinds of crontabs:</p>
+<ul>
+<li><strong>User crontabs</strong> — one per user, stored in
+<code>/var/spool/cron/</code> (location varies by distro: also
+<code>/var/spool/cron/crontabs/</code>). Managed only with the
+<code>crontab</code> command — <strong>never edit these files
+directly</strong>.</li>
+<li><strong>System crontab</strong> — <code>/etc/crontab</code> and the
+files in <code>/etc/cron.d/</code>. Edited as text by root.</li>
+</ul>
+<hr />
+<h2 id="crontab-format">3. Crontab Format</h2>
+<h3 id="user-crontab-5-fields-command">User crontab (5 fields +
+command)</h3>
+<pre><code>*  *  *  *  *   command-to-run
+│  │  │  │  │
+│  │  │  │  └── day of week (0–7, where 0 and 7 are Sunday)
+│  │  │  └───── month (1–12)
+│  │  └──────── day of month (1–31)
+│  └─────────── hour (0–23)
+└────────────── minute (0–59)</code></pre>
+<h3 id="system-crontab-etccrontab-and-etccron.d">System crontab
+(<code>/etc/crontab</code> and <code>/etc/cron.d/*</code>)</h3>
+<p>Same as above plus a <strong>user field</strong> before the
+command:</p>
+<pre><code>*  *  *  *  *  user  command-to-run</code></pre>
+<p>This is the <strong>single biggest difference</strong> to remember
+for the exam.</p>
+<h3 id="special-characters-in-time-fields">Special characters in time
+fields</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>*</code></td>
+<td>every value</td>
+<td><code>*</code> in hour = every hour</td>
+</tr>
+<tr class="even">
+<td><code>,</code></td>
+<td>list of values</td>
+<td><code>0,15,30,45</code> = four times an hour</td>
+</tr>
+<tr class="odd">
+<td><code>-</code></td>
+<td>range</td>
+<td><code>1-5</code> in day-of-week = Mon–Fri</td>
+</tr>
+<tr class="even">
+<td><code>/</code></td>
+<td>step</td>
+<td><code>*/10</code> in minute = every 10 minutes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="named-shortcuts">Named shortcuts</h3>
+<p>Instead of five fields, you can write:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Shortcut</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>@reboot</code></td>
+<td>Once at system startup.</td>
+</tr>
+<tr class="even">
+<td><code>@yearly</code> / <code>@annually</code></td>
+<td>Once a year (<code>0 0 1 1 *</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>@monthly</code></td>
+<td>Once a month (<code>0 0 1 * *</code>).</td>
+</tr>
+<tr class="even">
+<td><code>@weekly</code></td>
+<td>Once a week (<code>0 0 * * 0</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>@daily</code> / <code>@midnight</code></td>
+<td>Once a day (<code>0 0 * * *</code>).</td>
+</tr>
+<tr class="even">
+<td><code>@hourly</code></td>
+<td>Once an hour (<code>0 * * * *</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples-to-read-carefully">Examples to read carefully</h3>
+<pre class="cron"><code>0 3 * * *          /usr/local/bin/backup.sh
+# Every day at 03:00.
+
+*/15 * * * *       /usr/bin/check-disk.sh
+# Every 15 minutes.
+
+0 9-17 * * 1-5     /usr/local/bin/business.sh
+# Every hour from 09:00 to 17:00, Monday through Friday.
+
+30 2 1 * *         /usr/local/bin/monthly.sh
+# At 02:30 on the 1st of every month.
+
+0 0 * * 0          /usr/local/bin/weekly.sh
+# At midnight every Sunday.</code></pre>
+<p><strong>Watch out:</strong> if you set both day-of-month and
+day-of-week, cron runs the job when <strong>either</strong> matches
+(it’s an OR, not an AND).</p>
+<hr />
+<h2 id="managing-user-crontabs-with-crontab">4. Managing User Crontabs
+with <code>crontab</code></h2>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-l</span>            <span class="co"># list YOUR crontab</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-e</span>            <span class="co"># edit YOUR crontab (opens $EDITOR)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-r</span>            <span class="co"># remove YOUR crontab — no confirmation, careful!</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-i</span> <span class="at">-r</span>         <span class="co"># remove with confirmation</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> file.txt      <span class="co"># replace YOUR crontab with the contents of file.txt</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-l</span> <span class="at">-u</span> alice   <span class="co"># root: list alice&#39;s crontab</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">crontab</span> <span class="at">-e</span> <span class="at">-u</span> alice   <span class="co"># root: edit alice&#39;s crontab</span></span></code></pre></div>
+<p><code>crontab -e</code> is the right way to edit — it does syntax
+checks and reloads cron when you save.</p>
+<hr />
+<h2 id="the-system-crontab-and-etccron.-directories">5. The System
+Crontab and <code>/etc/cron.*/</code> Directories</h2>
+<p><code>/etc/crontab</code> is the main system crontab. A typical
+Debian/Ubuntu version looks like this:</p>
+<pre><code>SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+17 *   * * *   root    cd / &amp;&amp; run-parts --report /etc/cron.hourly
+25 6   * * *   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.daily )
+47 6   * * 7   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.weekly )
+52 6   1 * *   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.monthly )</code></pre>
+<p>This invokes <code>run-parts</code>, which runs every executable
+script inside the listed directories:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Directory</th>
+<th>Runs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/cron.hourly/</code></td>
+<td>Once an hour.</td>
+</tr>
+<tr class="even">
+<td><code>/etc/cron.daily/</code></td>
+<td>Once a day.</td>
+</tr>
+<tr class="odd">
+<td><code>/etc/cron.weekly/</code></td>
+<td>Once a week.</td>
+</tr>
+<tr class="even">
+<td><code>/etc/cron.monthly/</code></td>
+<td>Once a month.</td>
+</tr>
+</tbody>
+</table>
+<p>If you want a job to run on one of these schedules and you don’t need
+precise timing, just drop an executable script into the right directory.
+<strong>No crontab entry needed.</strong></p>
+<h3 id="etccron.d"><code>/etc/cron.d/</code></h3>
+<p>A directory of additional system crontab files. Each file uses the
+<strong>same format as <code>/etc/crontab</code></strong> (with the user
+field). Packages drop their cron jobs here so they don’t have to modify
+<code>/etc/crontab</code>.</p>
+<hr />
+<h2 id="environment-in-cron-jobs">6. Environment in cron Jobs</h2>
+<p>cron jobs run with a <strong>minimal environment</strong>. Common
+gotchas:</p>
+<ul>
+<li><code>PATH</code> is short — usually just
+<code>/usr/bin:/bin</code>. Use full paths in your commands.</li>
+<li><code>HOME</code> is set to the user’s home.</li>
+<li>No graphical or terminal environment — <code>DISPLAY</code>,
+<code>TERM</code>, etc. are absent.</li>
+<li>Output (stdout and stderr) is <strong>mailed to the user</strong> by
+default. Redirect to a file or <code>/dev/null</code> if you don’t want
+that.</li>
+</ul>
+<p>You can override variables at the top of a crontab:</p>
+<pre class="cron"><code>SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=admin@example.com
+
+0 3 * * * /usr/local/bin/backup.sh</code></pre>
+<p><code>MAILTO=""</code> disables mail entirely.
+<code>MAILTO=user</code> sends output to that user.</p>
+<hr />
+<h2 id="access-control-cron.allow-and-cron.deny">7. Access Control:
+<code>cron.allow</code> and <code>cron.deny</code></h2>
+<p>You can restrict which users may use <code>crontab</code>:</p>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/cron.allow</code></td>
+<td>If this file exists, <strong>only</strong> the users listed here may
+use cron.</td>
+</tr>
+<tr class="even">
+<td><code>/etc/cron.deny</code></td>
+<td>If <code>cron.allow</code> does <strong>not</strong> exist, users
+listed here are <strong>denied</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p>Rules:</p>
+<ol type="1">
+<li>If <code>cron.allow</code> exists, only it matters;
+<code>cron.deny</code> is ignored.</li>
+<li>If neither exists, behavior depends on the distribution (usually all
+users may use cron, or only root).</li>
+<li>One username per line.</li>
+</ol>
+<p><code>at</code> uses the same model with <code>/etc/at.allow</code>
+and <code>/etc/at.deny</code> (see section 9).</p>
+<hr />
+<h2 id="anacron">8. anacron</h2>
+<p><code>cron</code> only runs jobs at the time they are scheduled. If
+the machine is <strong>off</strong> at that time, the job is
+<strong>skipped</strong>. That’s fine for servers, but a problem for
+laptops and desktops.</p>
+<p><strong>anacron</strong> solves this. It is designed for systems that
+are <strong>not running 24/7</strong>. It checks whether a job has run
+within its specified period; if not, it runs the job now.</p>
+<h3 id="etcanacrontab"><code>/etc/anacrontab</code></h3>
+<p>Format (note: different from cron):</p>
+<pre><code>period   delay   job-id           command
+1        5       cron.daily       run-parts /etc/cron.daily
+7        25      cron.weekly      run-parts /etc/cron.weekly
+@monthly 45      cron.monthly     run-parts /etc/cron.monthly</code></pre>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>period</code></td>
+<td>How often the job should run, in days. <code>@monthly</code> is a
+shortcut.</td>
+</tr>
+<tr class="even">
+<td><code>delay</code></td>
+<td>Minutes to wait after anacron starts before running the job (so
+multiple jobs don’t all run at once).</td>
+</tr>
+<tr class="odd">
+<td><code>job-id</code></td>
+<td>Unique tag, used to record when the job last ran.</td>
+</tr>
+<tr class="even">
+<td><code>command</code></td>
+<td>The command to run.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-it-works">How it works</h3>
+<ul>
+<li>anacron stores the last-run date for each job-id in
+<code>/var/spool/anacron/</code>.</li>
+<li>When the system boots (or anacron runs), it compares today’s date to
+the stored date plus the period.</li>
+<li>If too much time has passed, the job runs after its
+<code>delay</code>.</li>
+</ul>
+<h3 id="coexistence-with-cron">Coexistence with cron</h3>
+<p>Most modern distributions use <strong>both</strong>:</p>
+<ul>
+<li>If the machine is up at the scheduled cron time, <code>cron</code>
+runs the daily/weekly/monthly jobs.</li>
+<li>If the machine was off, <code>anacron</code> runs them later —
+typically right after the next boot.</li>
+</ul>
+<p>That’s why entries in <code>/etc/crontab</code> often look like:
+<code>test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts /etc/cron.daily )</code>
+— meaning “only run from cron if anacron isn’t installed.”</p>
+<p>anacron itself does <strong>not</strong> run continuously; it is
+invoked by cron at boot or daily.</p>
+<hr />
+<h2 id="at-and-batch-one-off-jobs">9. <code>at</code> and
+<code>batch</code>: One-Off Jobs</h2>
+<p><code>at</code> schedules a command to run <strong>once</strong> at a
+future time.</p>
+<h3 id="submitting-a-job">Submitting a job</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> at 22:00</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">warning:</span> commands will be executed using /bin/sh</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">at</span><span class="op">&gt;</span> /usr/local/bin/backup.sh</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">at</span><span class="op">&gt;</span> <span class="op">&lt;</span>Ctrl-D<span class="op">&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">job</span> 4 at Mon May 12 22:00:00 2026</span></code></pre></div>
+<p>You can also feed a script via stdin:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> at 22:00 <span class="op">&lt;</span> script.sh</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;/usr/local/bin/cleanup.sh&quot;</span> <span class="kw">|</span> <span class="ex">at</span> now + 5 minutes</span></code></pre></div>
+<h3 id="time-specifications-at-understands">Time specifications
+<code>at</code> understands</h3>
+<pre><code>at 10:30
+at noon
+at midnight
+at teatime              # 16:00
+at 10am tomorrow
+at 23:00 next monday
+at now + 2 hours
+at now + 30 minutes
+at 14:00 2026-12-31</code></pre>
+<h3 id="managing-at-jobs">Managing at jobs</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>atq</code> (or <code>at -l</code>)</td>
+<td>List pending jobs.</td>
+</tr>
+<tr class="even">
+<td><code>atrm 4</code> (or <code>at -d 4</code>)</td>
+<td>Remove job number 4.</td>
+</tr>
+<tr class="odd">
+<td><code>at -c 4</code></td>
+<td>Show the content of job 4.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="batch"><code>batch</code></h3>
+<p><code>batch</code> is <code>at</code>’s sibling. It runs the command
+<strong>as soon as system load drops below a threshold</strong>
+(traditionally a load average under 0.8), instead of at a specific
+time.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> batch</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">at</span><span class="op">&gt;</span> /usr/local/bin/big-job.sh</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">at</span><span class="op">&gt;</span> <span class="op">&lt;</span>Ctrl-D<span class="op">&gt;</span></span></code></pre></div>
+<h3 id="access-control-for-at">Access control for <code>at</code></h3>
+<p>Same model as cron:</p>
+<ul>
+<li><code>/etc/at.allow</code> — if present, only listed users may use
+<code>at</code>.</li>
+<li><code>/etc/at.deny</code> — used only if <code>at.allow</code> does
+not exist.</li>
+</ul>
+<h3 id="job-spool">Job spool</h3>
+<p><code>at</code> jobs are stored in <code>/var/spool/at/</code> (or
+<code>/var/spool/atjobs/</code>). You don’t usually look in there.</p>
+<hr />
+<h2 id="systemd-timers-awareness">10. systemd Timers (Awareness)</h2>
+<p>The exam expects awareness of <strong>systemd timers</strong> as a
+modern alternative to cron.</p>
+<p>Key points:</p>
+<ul>
+<li>A <strong>timer unit</strong> (<code>.timer</code> file) triggers a
+corresponding <strong>service unit</strong> (<code>.service</code>
+file).</li>
+<li>Compared to cron, timers offer: dependency on other units, accurate
+logging via <code>journalctl</code>, more flexible time syntax, and the
+ability to be persistent (re-run missed jobs, like anacron).</li>
+<li>Managed with the standard systemd tools:</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> list-timers              <span class="co"># show all active timers</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status mytask.timer</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> enable <span class="at">--now</span> mytask.timer</span></code></pre></div>
+<p>You don’t need to write timer files for the exam, just know they
+exist and replace cron.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">11. Quick Reference for the
+Exam</h2>
+<p><strong>Files and directories:</strong></p>
+<ul>
+<li><code>/etc/crontab</code></li>
+<li><code>/etc/cron.d/</code></li>
+<li><code>/etc/cron.hourly/</code>, <code>/etc/cron.daily/</code>,
+<code>/etc/cron.weekly/</code>, <code>/etc/cron.monthly/</code></li>
+<li><code>/etc/cron.allow</code>, <code>/etc/cron.deny</code></li>
+<li><code>/var/spool/cron/</code> (user crontabs — do not edit by
+hand)</li>
+<li><code>/etc/anacrontab</code></li>
+<li><code>/var/spool/anacron/</code></li>
+<li><code>/etc/at.allow</code>, <code>/etc/at.deny</code></li>
+<li><code>/var/spool/at/</code></li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>crontab</code> (with <code>-l</code>, <code>-e</code>,
+<code>-r</code>, <code>-u</code>)</li>
+<li><code>cron</code> / <code>crond</code> (the daemon)</li>
+<li><code>at</code>, <code>atq</code>, <code>atrm</code>,
+<code>batch</code></li>
+<li><code>anacron</code></li>
+<li><code>systemctl list-timers</code> (awareness)</li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">12. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>What are the five time fields of a user crontab, in
+order?</strong> minute, hour, day of month, month, day of week.</p></li>
+<li><p><strong>What extra field does <code>/etc/crontab</code> have that
+a user crontab doesn’t?</strong> The <strong>user</strong> field
+(between time fields and the command).</p></li>
+<li><p><strong>How do you write “every 15 minutes” in cron?</strong>
+<code>*/15 * * * *</code>.</p></li>
+<li><p><strong>What does <code>@daily</code> mean in a crontab?</strong>
+Same as <code>0 0 * * *</code> — once a day at midnight.</p></li>
+<li><p><strong>Where are user crontabs stored, and should you edit them
+directly?</strong> In <code>/var/spool/cron/</code> (or
+<code>/var/spool/cron/crontabs/</code>). <strong>No</strong> — always
+use <code>crontab -e</code>.</p></li>
+<li><p><strong>How do you list another user’s crontab as root?</strong>
+<code>crontab -l -u username</code>.</p></li>
+<li><p><strong>What is the difference between cron and anacron?</strong>
+cron runs jobs at exact times and skips them if the machine is off;
+anacron runs jobs that were missed once the machine is back on. anacron
+is for desktops/laptops that aren’t on 24/7.</p></li>
+<li><p><strong>What are the fields of
+<code>/etc/anacrontab</code>?</strong> period (days), delay (minutes),
+job-id, command.</p></li>
+<li><p><strong>You want a one-time command to run tomorrow at 3 a.m.
+Which tool do you use, and how?</strong> <code>at</code>. Example:
+<code>at 03:00 tomorrow</code>.</p></li>
+<li><p><strong>What is <code>batch</code>?</strong> Like
+<code>at</code>, but runs the command when the system load drops below a
+threshold instead of at a specified time.</p></li>
+<li><p><strong>How do you list pending <code>at</code> jobs and remove
+one?</strong> <code>atq</code> to list,
+<code>atrm &lt;jobnumber&gt;</code> to remove.</p></li>
+<li><p><strong>If <code>/etc/cron.allow</code> exists with one user
+“alice” in it, who can use cron?</strong> Only alice (and root).
+Everyone else is denied. <code>/etc/cron.deny</code> is ignored when
+<code>cron.allow</code> exists.</p></li>
+<li><p><strong>A cron job runs but can’t find the <code>python3</code>
+command, which works fine in your shell. Why?</strong> cron’s
+<code>PATH</code> is minimal. Either use the full path
+(<code>/usr/bin/python3</code>) or set <code>PATH=</code> at the top of
+the crontab.</p></li>
+<li><p><strong>Where does the output of a cron job go by
+default?</strong> It is <strong>emailed</strong> to the owning user.
+Redirect to a file or <code>/dev/null</code> to suppress.</p></li>
+<li><p><strong>A script must run once every hour without precise
+scheduling. What is the simplest way?</strong> Drop an executable script
+into <code>/etc/cron.hourly/</code>.</p></li>
+</ol>
+</body>
+</html>

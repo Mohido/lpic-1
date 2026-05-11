@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>107.1 Manage User and Group Accounts and Related System Files</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">107.1 Manage User and Group Accounts and Related
+System Files</h1>
+</header>
+<h1 id="manage-user-and-group-accounts-and-related-system-files">107.1
+Manage User and Group Accounts and Related System Files</h1>
+<p><strong>Weight: 5</strong></p>
+<p><strong>Goal:</strong> Add, remove, suspend, and change user
+accounts.</p>
+<p>This is a <strong>high-weight</strong> objective — expect several
+questions on the exam.</p>
+<hr />
+<h2 id="the-four-core-usergroup-files">1. The Four Core User/Group
+Files</h2>
+<p>Linux stores account information in four plain text files in
+<code>/etc</code>. Know them cold.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 34%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Contents</th>
+<th>Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/passwd</code></td>
+<td>One line per user: account info (no password).</td>
+<td>World-readable (<code>644</code>).</td>
+</tr>
+<tr class="even">
+<td><code>/etc/shadow</code></td>
+<td>One line per user: encrypted password and aging info.</td>
+<td>Root-only (<code>640</code> or <code>400</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>/etc/group</code></td>
+<td>One line per group: group name, GID, member list.</td>
+<td>World-readable (<code>644</code>).</td>
+</tr>
+<tr class="even">
+<td><code>/etc/gshadow</code></td>
+<td>Encrypted group passwords and group admins.</td>
+<td>Root-only.</td>
+</tr>
+</tbody>
+</table>
+<p>The “shadow” files exist because the password and group files are
+world-readable, and password hashes must not be exposed to ordinary
+users.</p>
+<hr />
+<h2 id="etcpasswd-user-accounts">2. <code>/etc/passwd</code> — User
+Accounts</h2>
+<p>Each line has <strong>seven colon-separated fields</strong>:</p>
+<pre><code>username:password:UID:GID:GECOS:home_directory:login_shell</code></pre>
+<p>Example:</p>
+<pre><code>alice:x:1001:1001:Alice Smith,,,:/home/alice:/bin/bash</code></pre>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>username</code></td>
+<td>Login name.</td>
+</tr>
+<tr class="even">
+<td><code>password</code></td>
+<td>An <code>x</code> means the real password is in
+<code>/etc/shadow</code>. (Historically the hash was here.)</td>
+</tr>
+<tr class="odd">
+<td><code>UID</code></td>
+<td>Numeric <strong>user ID</strong>. <code>0</code> is root. Service
+users are usually <code>1–999</code>; regular users start at
+<code>1000</code>.</td>
+</tr>
+<tr class="even">
+<td><code>GID</code></td>
+<td>The user’s <strong>primary group ID</strong> (matches an entry in
+<code>/etc/group</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>GECOS</code></td>
+<td>Comment field: full name, room, phone — typically just the full
+name.</td>
+</tr>
+<tr class="even">
+<td><code>home_directory</code></td>
+<td>Path to the user’s home, e.g. <code>/home/alice</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>login_shell</code></td>
+<td>Default shell, e.g. <code>/bin/bash</code>. Use
+<code>/usr/sbin/nologin</code> or <code>/bin/false</code> to prevent
+login.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="uid-conventions">UID conventions</h3>
+<ul>
+<li><code>0</code> — root.</li>
+<li><code>1–999</code> (or <code>1–499</code> on older systems) —
+<strong>system / service accounts</strong> (daemons like
+<code>www-data</code>, <code>sshd</code>, <code>mail</code>).</li>
+<li><code>1000+</code> — <strong>regular human users</strong>. The
+starting UID is set in <code>/etc/login.defs</code>.</li>
+</ul>
+<hr />
+<h2 id="etcshadow-encrypted-passwords-and-aging">3.
+<code>/etc/shadow</code> — Encrypted Passwords and Aging</h2>
+<p>Each line has <strong>nine colon-separated fields</strong>:</p>
+<pre><code>username:password:last_change:min:max:warn:inactive:expire:reserved</code></pre>
+<p>Example:</p>
+<pre><code>alice:$6$abc...$xyz...:19400:0:99999:7:::</code></pre>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>username</code></td>
+<td>Must match <code>/etc/passwd</code>.</td>
+</tr>
+<tr class="even">
+<td><code>password</code></td>
+<td>Hashed password. Special values: <code>*</code> or <code>!</code> =
+account locked / no password set; empty = no password required
+(dangerous).</td>
+</tr>
+<tr class="odd">
+<td><code>last_change</code></td>
+<td>Date of the last password change, in <strong>days since 1 Jan
+1970</strong>.</td>
+</tr>
+<tr class="even">
+<td><code>min</code></td>
+<td>Minimum days between password changes (<code>0</code> = can change
+anytime).</td>
+</tr>
+<tr class="odd">
+<td><code>max</code></td>
+<td>Maximum days a password is valid before it must be changed.</td>
+</tr>
+<tr class="even">
+<td><code>warn</code></td>
+<td>Days before expiry to start warning the user.</td>
+</tr>
+<tr class="odd">
+<td><code>inactive</code></td>
+<td>Days after password expires that the account is still usable; after
+that it is disabled.</td>
+</tr>
+<tr class="even">
+<td><code>expire</code></td>
+<td>Absolute account expiration date (days since 1970). After this date
+the account is disabled regardless of password.</td>
+</tr>
+<tr class="odd">
+<td><code>reserved</code></td>
+<td>Reserved for future use.</td>
+</tr>
+</tbody>
+</table>
+<p>The hash starts with an algorithm identifier: <code>$1$</code> = MD5,
+<code>$5$</code> = SHA-256, <code>$6$</code> = SHA-512 (the modern
+default).</p>
+<hr />
+<h2 id="etcgroup-groups">4. <code>/etc/group</code> — Groups</h2>
+<p>Each line has <strong>four colon-separated fields</strong>:</p>
+<pre><code>groupname:password:GID:member_list</code></pre>
+<p>Example:</p>
+<pre><code>developers:x:1500:alice,bob,carol</code></pre>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>groupname</code></td>
+<td>Name of the group.</td>
+</tr>
+<tr class="even">
+<td><code>password</code></td>
+<td>Almost always <code>x</code> (real one in <code>/etc/gshadow</code>)
+or empty.</td>
+</tr>
+<tr class="odd">
+<td><code>GID</code></td>
+<td>Numeric group ID.</td>
+</tr>
+<tr class="even">
+<td><code>member_list</code></td>
+<td>Comma-separated usernames who are <strong>secondary members</strong>
+of this group.</td>
+</tr>
+</tbody>
+</table>
+<p>A user’s <strong>primary group</strong> is the GID in their
+<code>/etc/passwd</code> line — it is <strong>not</strong> repeated in
+<code>/etc/group</code>’s member list. Every other group the user
+belongs to is a <strong>secondary (supplementary)</strong> group, and
+those memberships appear here.</p>
+<hr />
+<h2 id="etcgshadow-group-shadow-file">5. <code>/etc/gshadow</code> —
+Group Shadow File</h2>
+<p>Format:</p>
+<pre><code>groupname:password:administrators:members</code></pre>
+<p>Rarely edited by hand. Stores hashed group passwords and lists of
+group admins. Most systems do not use group passwords at all.</p>
+<hr />
+<h2 id="creating-users-useradd-and-adduser">6. Creating Users:
+<code>useradd</code> and <code>adduser</code></h2>
+<h3 id="useradd-the-low-level-tool"><code>useradd</code> — the low-level
+tool</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># useradd [options] username</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> alice                       <span class="co"># create user &quot;alice&quot; with system defaults</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-m</span> alice                    <span class="co"># also create the home directory</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-m</span> <span class="at">-s</span> /bin/bash alice       <span class="co"># set the login shell</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-m</span> <span class="at">-c</span> <span class="st">&quot;Alice Smith&quot;</span> alice   <span class="co"># set the GECOS comment</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-u</span> 1500 alice               <span class="co"># specify the UID</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-g</span> developers alice         <span class="co"># set the primary group</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-G</span> wheel,sudo alice         <span class="co"># set supplementary groups</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-d</span> /srv/alice alice         <span class="co"># specify the home directory</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-e</span> 2026-12-31 alice         <span class="co"># set account expiration date</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">useradd</span> <span class="at">-r</span> daemonuser               <span class="co"># create a system account (no aging, low UID)</span></span></code></pre></div>
+<p>Important: <code>useradd</code> alone does <strong>not</strong> set a
+password. Run <code>passwd alice</code> afterwards, or the account will
+be locked.</p>
+<p>When <code>-m</code> is used, files from
+<strong><code>/etc/skel/</code></strong> are copied into the new home
+directory (see objective 105.1).</p>
+<h3 id="defaults-etcdefaultuseradd-and-etclogin.defs">Defaults:
+<code>/etc/default/useradd</code> and <code>/etc/login.defs</code></h3>
+<ul>
+<li><strong><code>/etc/default/useradd</code></strong> — defaults used
+by <code>useradd</code> (default shell, home base, skeleton, etc.). View
+with <code>useradd -D</code> and modify with
+<code>useradd -D -s /bin/zsh</code>.</li>
+<li><strong><code>/etc/login.defs</code></strong> — system-wide policy
+defaults: UID/GID ranges, password aging defaults, mail directory,
+etc.</li>
+</ul>
+<h3 id="adduser-the-friendly-wrapper"><code>adduser</code> — the
+friendly wrapper</h3>
+<p>On Debian/Ubuntu, <code>adduser</code> is a friendlier script that
+calls <code>useradd</code> for you. It creates the home, copies skel
+files, prompts for a password and GECOS info, etc.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">adduser</span> alice</span></code></pre></div>
+<p>The exam may mention both, so know that <code>useradd</code> is the
+standard command and <code>adduser</code> is a higher-level helper.</p>
+<hr />
+<h2 id="modifying-users-usermod">7. Modifying Users:
+<code>usermod</code></h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># usermod [options] username</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-l</span> newname oldname          <span class="co"># rename the account</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-d</span> /home/new <span class="at">-m</span> alice       <span class="co"># change home dir, move contents</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-s</span> /bin/zsh alice           <span class="co"># change login shell</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-c</span> <span class="st">&quot;Alice Jones&quot;</span> alice      <span class="co"># change GECOS comment</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-u</span> 2000 alice               <span class="co"># change UID</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-g</span> newgroup alice           <span class="co"># change primary group</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-G</span> wheel,sudo alice         <span class="co"># REPLACE supplementary groups</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-aG</span> docker alice            <span class="co"># APPEND to supplementary groups (-a needs -G)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-L</span> alice                    <span class="co"># LOCK the account</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-U</span> alice                    <span class="co"># UNLOCK the account</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="ex">usermod</span> <span class="at">-e</span> 2026-12-31 alice         <span class="co"># set account expiration</span></span></code></pre></div>
+<p><strong>Exam trap:</strong> <code>usermod -G groups</code>
+<em>replaces</em> the supplementary group list. To <strong>add</strong>
+a user to a new group without losing existing memberships, use
+<code>-aG</code> together.</p>
+<hr />
+<h2 id="deleting-users-userdel">8. Deleting Users:
+<code>userdel</code></h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">userdel</span> alice                       <span class="co"># remove user, keep home directory and mail</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">userdel</span> <span class="at">-r</span> alice                    <span class="co"># remove user, home directory, and mail</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="ex">userdel</span> <span class="at">-f</span> alice                    <span class="co"># force removal even if logged in</span></span></code></pre></div>
+<p><code>-r</code> is the one you must remember: it also deletes
+<code>/home/alice</code> and <code>/var/spool/mail/alice</code>.</p>
+<hr />
+<h2 id="group-management-groupadd-groupmod-groupdel">9. Group
+Management: <code>groupadd</code>, <code>groupmod</code>,
+<code>groupdel</code></h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">groupadd</span> developers                 <span class="co"># create a group</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">groupadd</span> <span class="at">-g</span> 1500 developers         <span class="co"># specify the GID</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">groupadd</span> <span class="at">-r</span> systemgroup             <span class="co"># create a system group (low GID)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">groupmod</span> <span class="at">-n</span> newname oldname         <span class="co"># rename a group</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="ex">groupmod</span> <span class="at">-g</span> 1600 developers         <span class="co"># change a group&#39;s GID</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="ex">groupdel</span> developers                 <span class="co"># delete a group</span></span></code></pre></div>
+<p>You <strong>cannot</strong> delete a group that is the primary group
+of any user.</p>
+<h3 id="gpasswd-manage-group-membership-and-admins"><code>gpasswd</code>
+— manage group membership and admins</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gpasswd</span> <span class="at">-a</span> alice developers         <span class="co"># add alice to the developers group</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">gpasswd</span> <span class="at">-d</span> alice developers         <span class="co"># remove alice from developers</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">gpasswd</span> <span class="at">-A</span> bob developers           <span class="co"># make bob a group administrator</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ex">gpasswd</span> developers                  <span class="co"># set a group password (rarely used)</span></span></code></pre></div>
+<hr />
+<h2 id="passwords-and-aging-passwd-and-chage">10. Passwords and Aging:
+<code>passwd</code> and <code>chage</code></h2>
+<h3 id="passwd-change-a-password"><code>passwd</code> — change a
+password</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span>                              <span class="co"># change YOUR password</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> alice                        <span class="co"># root changes alice&#39;s password</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> <span class="at">-l</span> alice                     <span class="co"># LOCK alice (prepends ! to the hash)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> <span class="at">-u</span> alice                     <span class="co"># UNLOCK alice</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> <span class="at">-d</span> alice                     <span class="co"># DELETE password — no password required (dangerous)</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> <span class="at">-e</span> alice                     <span class="co"># EXPIRE password — alice must change at next login</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">passwd</span> <span class="at">-S</span> alice                     <span class="co"># show password STATUS</span></span></code></pre></div>
+<p><code>passwd -S</code> output looks like:</p>
+<pre><code>alice PS 2026-01-15 0 99999 7 -1</code></pre>
+<p>The letters mean: <strong>PS</strong> = password set,
+<strong>LK</strong> = locked, <strong>NP</strong> = no password.</p>
+<h3 id="chage-change-password-aging"><code>chage</code> — change
+password aging</h3>
+<p><code>chage</code> (CHange AGE) edits the aging fields in
+<code>/etc/shadow</code> in a friendly way.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-l</span> alice                      <span class="co"># LIST aging info for alice</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> alice                         <span class="co"># interactive mode (asks each field)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-M</span> 90 alice                   <span class="co"># MAX days: must change every 90 days</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-m</span> 7 alice                    <span class="co"># MIN days between changes</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-W</span> 14 alice                   <span class="co"># WARN 14 days before expiry</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-I</span> 30 alice                   <span class="co"># INACTIVE: 30 days after expiry, lock account</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-E</span> 2026-12-31 alice           <span class="co"># account EXPIRATION date</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-d</span> 0 alice                    <span class="co"># force password change at next login</span></span></code></pre></div>
+<p>Memorize the flag-to-field mapping:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Flag</th>
+<th><code>/etc/shadow</code> field</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-m</code></td>
+<td>Minimum days</td>
+</tr>
+<tr class="even">
+<td><code>-M</code></td>
+<td>Maximum days</td>
+</tr>
+<tr class="odd">
+<td><code>-W</code></td>
+<td>Warning days</td>
+</tr>
+<tr class="even">
+<td><code>-I</code></td>
+<td>Inactive days</td>
+</tr>
+<tr class="odd">
+<td><code>-E</code></td>
+<td>Expiration date</td>
+</tr>
+<tr class="even">
+<td><code>-d</code></td>
+<td>Last change date</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="information-commands">11. Information Commands</h2>
+<table>
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Shows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>UID, GID, and groups of a user. <code>id alice</code></td>
+</tr>
+<tr class="even">
+<td><code>whoami</code></td>
+<td>Your effective username.</td>
+</tr>
+<tr class="odd">
+<td><code>who</code></td>
+<td>Who is currently logged in (from <code>/var/run/utmp</code>).</td>
+</tr>
+<tr class="even">
+<td><code>w</code></td>
+<td>Who is logged in <strong>and what they’re doing</strong>.</td>
+</tr>
+<tr class="odd">
+<td><code>users</code></td>
+<td>Just the names of currently logged-in users.</td>
+</tr>
+<tr class="even">
+<td><code>last</code></td>
+<td>History of logins (from <code>/var/log/wtmp</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>groups alice</code></td>
+<td>Groups <code>alice</code> belongs to.</td>
+</tr>
+<tr class="even">
+<td><code>getent passwd alice</code></td>
+<td>Look up alice in the system’s user databases (passwd, LDAP,
+etc.).</td>
+</tr>
+<tr class="odd">
+<td><code>getent group developers</code></td>
+<td>Same, for groups.</td>
+</tr>
+</tbody>
+</table>
+<p><code>getent</code> is important when the system uses
+<strong>NSS</strong> (Name Service Switch) — for example, when users
+come from LDAP or NIS, not just <code>/etc/passwd</code>. Always use
+<code>getent</code> instead of <code>grep /etc/passwd</code> if you want
+a complete answer.</p>
+<hr />
+<h2 id="suspending-vs.-deleting-an-account">12. Suspending vs. Deleting
+an Account</h2>
+<p>The objective explicitly mentions <strong>suspending</strong>
+accounts. Several ways to do it:</p>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>passwd -l alice</code></td>
+<td>Locks the password (prepends <code>!</code> to the hash). User can’t
+log in with a password — but key-based SSH may still work.</td>
+</tr>
+<tr class="even">
+<td><code>usermod -L alice</code></td>
+<td>Same effect as <code>passwd -l</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>usermod -e 1</code></td>
+<td>Sets account expiration to a date in the past — account fully
+disabled.</td>
+</tr>
+<tr class="even">
+<td>Change shell to <code>/usr/sbin/nologin</code></td>
+<td>User can’t get an interactive shell.</td>
+</tr>
+<tr class="odd">
+<td><code>chage -E 0 alice</code></td>
+<td>Sets expiration to the epoch — account disabled.</td>
+</tr>
+</tbody>
+</table>
+<p>To <strong>resume</strong> the account: <code>passwd -u alice</code>
+or <code>usermod -U alice</code>.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">13. Quick Reference for the
+Exam</h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li><code>/etc/passwd</code></li>
+<li><code>/etc/shadow</code></li>
+<li><code>/etc/group</code></li>
+<li><code>/etc/gshadow</code></li>
+<li><code>/etc/skel/</code></li>
+<li><code>/etc/default/useradd</code></li>
+<li><code>/etc/login.defs</code></li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>useradd</code>, <code>adduser</code></li>
+<li><code>usermod</code></li>
+<li><code>userdel</code></li>
+<li><code>groupadd</code>, <code>groupmod</code>,
+<code>groupdel</code></li>
+<li><code>gpasswd</code></li>
+<li><code>passwd</code></li>
+<li><code>chage</code></li>
+<li><code>id</code>, <code>groups</code>, <code>whoami</code></li>
+<li><code>who</code>, <code>w</code>, <code>users</code>,
+<code>last</code></li>
+<li><code>getent</code></li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">14. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>How many fields does <code>/etc/passwd</code> have, and
+what are they?</strong> Seven:
+<code>username:password:UID:GID:GECOS:home:shell</code>.</p></li>
+<li><p><strong>What does an <code>x</code> in the password field of
+<code>/etc/passwd</code> mean?</strong> The real password hash is stored
+in <code>/etc/shadow</code>.</p></li>
+<li><p><strong>Where is the encrypted password actually stored?</strong>
+In <code>/etc/shadow</code>.</p></li>
+<li><p><strong>What is the difference between <code>usermod -G</code>
+and <code>usermod -aG</code>?</strong> <code>-G</code>
+<strong>replaces</strong> the supplementary group list. <code>-aG</code>
+<strong>appends</strong> to it.</p></li>
+<li><p><strong>You want to delete <code>alice</code> and her home
+directory in one command. What is it?</strong>
+<code>userdel -r alice</code>.</p></li>
+<li><p><strong>How do you lock an account so the user cannot log in with
+a password?</strong> <code>passwd -l alice</code> or
+<code>usermod -L alice</code>.</p></li>
+<li><p><strong>What flag of <code>chage</code> sets the maximum password
+age (days)?</strong> <code>-M</code>.</p></li>
+<li><p><strong>What does <code>chage -d 0 alice</code> do?</strong>
+Forces alice to change her password at the next login.</p></li>
+<li><p><strong>What is the typical starting UID for regular human users
+on a modern Linux?</strong> <code>1000</code>.</p></li>
+<li><p><strong>Where are the defaults for <code>useradd</code>
+configured?</strong> In <code>/etc/default/useradd</code> (and
+system-wide policy in <code>/etc/login.defs</code>).</p></li>
+<li><p><strong>What command is preferred over
+<code>grep /etc/passwd</code> to look up a user when LDAP or NIS may be
+in use?</strong> <code>getent passwd username</code>.</p></li>
+<li><p><strong>What does <code>id alice</code> show?</strong> Alice’s
+UID, primary GID, and all supplementary groups.</p></li>
+<li><p><strong>Which file contains the date of the last password
+change?</strong> <code>/etc/shadow</code> (field 3, in days since 1 Jan
+1970).</p></li>
+<li><p><strong>What number identifies the root user?</strong> UID
+<code>0</code>.</p></li>
+<li><p><strong>Why can system accounts often not log in?</strong> Their
+login shell is set to <code>/usr/sbin/nologin</code> or
+<code>/bin/false</code>, and/or their password is locked.</p></li>
+</ol>
+</body>
+</html>

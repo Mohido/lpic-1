@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>110.2 Setup Host Security</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">110.2 Setup Host Security</h1>
+</header>
+<h1 id="setup-host-security">110.2 Setup Host Security</h1>
+<p><strong>Weight: 3</strong></p>
+<p><strong>Goal:</strong> Know how to set up a basic level of host
+security.</p>
+<p>This objective is about <strong>hardening a single Linux
+machine</strong> — turning off what shouldn’t be on, protecting
+passwords, and choosing the right authentication mechanism.</p>
+<hr />
+<h2 id="use-a-shadow-password-suite">1. Use a Shadow Password Suite</h2>
+<p>Old Unix stored password hashes in the world-readable
+<code>/etc/passwd</code>. Anyone could read them and run an offline
+cracker. The <strong>shadow password suite</strong> moves the hashes to
+<code>/etc/shadow</code>, which is readable only by root.</p>
+<p>You have already met these files in 107.1. For 110.2 the key facts
+are:</p>
+<ul>
+<li><code>/etc/passwd</code> — world-readable, no password.</li>
+<li><code>/etc/shadow</code> — root-only, contains the hashes.</li>
+<li><code>/etc/group</code> — world-readable.</li>
+<li><code>/etc/gshadow</code> — root-only.</li>
+</ul>
+<p>On any modern Linux, the shadow suite is <strong>on by
+default</strong>. The relevant administrative commands:</p>
+<table>
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pwconv</code></td>
+<td>Convert from <code>/etc/passwd</code> to <code>/etc/passwd</code> +
+<code>/etc/shadow</code> (turn on shadow).</td>
+</tr>
+<tr class="even">
+<td><code>pwunconv</code></td>
+<td>Reverse: move hashes back into <code>/etc/passwd</code> (turn off
+shadow — almost never done).</td>
+</tr>
+<tr class="odd">
+<td><code>grpconv</code></td>
+<td>Same idea for <code>/etc/group</code> →
+<code>/etc/gshadow</code>.</td>
+</tr>
+<tr class="even">
+<td><code>grpunconv</code></td>
+<td>Reverse for groups.</td>
+</tr>
+</tbody>
+</table>
+<p>You should never need to run these on a real system, but they appear
+on the exam.</p>
+<hr />
+<h2 id="disable-unneeded-services">2. Disable Unneeded Services</h2>
+<p>The fewer services that run, the smaller the attack surface. The
+procedure is the same regardless of distribution:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> list-units <span class="at">--type</span><span class="op">=</span>service <span class="at">--state</span><span class="op">=</span>running    <span class="co"># what is running</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> list-unit-files <span class="at">--state</span><span class="op">=</span>enabled              <span class="co"># what starts at boot</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> stop SERVICE                                  <span class="co"># stop now</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> disable SERVICE                               <span class="co"># don&#39;t start at boot</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> disable <span class="at">--now</span> SERVICE                         <span class="co"># both in one command</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> mask SERVICE                                  <span class="co"># forcibly prevent starting</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                                                        <span class="co"># (even by dependency)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> unmask SERVICE                                <span class="co"># undo masking</span></span></code></pre></div>
+<p><code>mask</code> is stronger than <code>disable</code>: a masked
+unit cannot be started at all, even by another service that depends on
+it.</p>
+<h3 id="on-older-or-non-systemd-systems">On older or non-systemd
+systems</h3>
+<ul>
+<li><code>chkconfig SERVICE off</code> (SysV-init based RHEL).</li>
+<li><code>update-rc.d SERVICE disable</code> (SysV-init based
+Debian).</li>
+<li>The <code>service</code> command (<code>service SERVICE stop</code>)
+was the universal frontend.</li>
+</ul>
+<p>You should recognize these from older systems but
+<code>systemctl</code> is the modern reference.</p>
+<h3 id="inetd-and-xinetd-legacy-superservers"><code>inetd</code> and
+<code>xinetd</code> (legacy superservers)</h3>
+<p>Historically, <strong>inetd</strong> or <strong>xinetd</strong> ran
+in the background and listened on many ports, starting the actual
+service only when a connection came in. This saved resources but is
+largely obsolete — most services now run standalone or under systemd
+socket activation.</p>
+<p>Files to recognize:</p>
+<ul>
+<li><strong>inetd</strong>: <code>/etc/inetd.conf</code> — one line per
+service, with a <code>#</code> in front to disable it.</li>
+<li><strong>xinetd</strong>: <code>/etc/xinetd.conf</code> and
+<code>/etc/xinetd.d/*</code> — one file per service, with
+<code>disable = yes</code> to turn one off.</li>
+</ul>
+<p>For the exam: know that they exist, that disabling a service means
+commenting it out (inetd) or setting <code>disable = yes</code>
+(xinetd), and that they have been replaced by systemd socket units on
+most modern distros.</p>
+<hr />
+<h2 id="limiting-root-logins">3. Limiting Root Logins</h2>
+<p>A few practical hardening choices for the root account:</p>
+<h3 id="etcsecuretty"><code>/etc/securetty</code></h3>
+<p>Lists the <strong>terminals</strong> on which root may log in
+directly. If a tty is not listed here, root cannot log into it via the
+local login program. A common setup limits root to physical consoles
+only:</p>
+<pre><code>console
+tty1
+tty2
+tty3
+tty4
+tty5
+tty6</code></pre>
+<p>Removing entries (or emptying the file) prevents direct root login on
+those terminals — administrators must log in as themselves and use
+<code>su</code> or <code>sudo</code>.</p>
+<h3 id="etcnologin"><code>/etc/nologin</code></h3>
+<p>If this file <strong>exists</strong>, only root may log in. Useful
+right before shutdown or during maintenance. Its contents are shown to
+users whose login is refused.</p>
+<h3 id="disabling-root-ssh-login">Disabling root SSH login</h3>
+<p>In <code>/etc/ssh/sshd_config</code>, set:</p>
+<pre><code>PermitRootLogin no</code></pre>
+<p>Force admins to log in as themselves and use <code>sudo</code>. (More
+on SSH in 110.3.)</p>
+<h3 id="empty-passwords">Empty passwords</h3>
+<p>The <strong>default</strong> PAM and SSH configurations forbid empty
+passwords. Keep it that way:</p>
+<ul>
+<li><code>/etc/ssh/sshd_config</code>:
+<code>PermitEmptyPasswords no</code>.</li>
+<li>Make sure no user has an empty <code>password</code> field in
+<code>/etc/shadow</code>.</li>
+</ul>
+<hr />
+<h2 id="password-aging-quick-recap">4. Password Aging (Quick Recap)</h2>
+<p>Already covered in 107.1, summarised here because it’s a
+host-security task:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-l</span> alice                    <span class="co"># show aging info</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-M</span> 90 alice                 <span class="co"># password must be changed every 90 days</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-m</span> 7 alice                  <span class="co"># min days between changes</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-W</span> 14 alice                 <span class="co"># warn 14 days before expiry</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-I</span> 30 alice                 <span class="co"># disable 30 days after expiry</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-E</span> 2026-12-31 alice         <span class="co"># account expiration</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">chage</span> <span class="at">-d</span> 0 alice                  <span class="co"># force change at next login</span></span></code></pre></div>
+<p>System-wide defaults live in <code>/etc/login.defs</code>
+(<code>PASS_MAX_DAYS</code>, <code>PASS_MIN_DAYS</code>,
+<code>PASS_WARN_AGE</code>).</p>
+<hr />
+<h2 id="pam-and-password-policy-awareness">5. PAM and Password Policy
+(Awareness)</h2>
+<p><strong>PAM (Pluggable Authentication Modules)</strong> is the
+framework that handles authentication on Linux. You don’t need to write
+PAM rules for this objective, but you should recognize:</p>
+<ul>
+<li><code>/etc/pam.d/</code> — one configuration file per service
+(<code>login</code>, <code>sshd</code>, <code>su</code>,
+<code>sudo</code>, <code>passwd</code>).</li>
+<li><code>pam_unix.so</code> — authenticates against
+<code>/etc/shadow</code>.</li>
+<li><code>pam_cracklib.so</code> / <code>pam_pwquality.so</code> —
+enforce password complexity (length, character classes, history).</li>
+<li><code>pam_tally2</code> / <code>pam_faillock</code> — lock accounts
+after failed login attempts.</li>
+<li><code>pam_limits.so</code> — applies
+<code>/etc/security/limits.conf</code>.</li>
+</ul>
+<p>That set of names is the level the exam expects.</p>
+<hr />
+<h2 id="nis-network-information-service-awareness">6. NIS — Network
+Information Service (Awareness)</h2>
+<p><strong>NIS</strong> (Network Information Service), originally called
+<strong>YP</strong> (Yellow Pages), is an old Sun-developed system for
+centralized account databases on a LAN. It distributes
+<code>/etc/passwd</code>, <code>/etc/group</code>, and similar files to
+many clients from a master server.</p>
+<p>For the exam, recognize:</p>
+<ul>
+<li>It is <strong>obsolete</strong> — replaced by <strong>LDAP</strong>
+(and Kerberos, AD).</li>
+<li>It is <strong>insecure</strong> — passwords travel essentially
+unprotected.</li>
+<li>Mentioned in <code>/etc/nsswitch.conf</code> lines like
+<code>passwd: files nis</code>.</li>
+</ul>
+<p>Don’t deploy NIS on a new system today — but expect to see it
+referenced.</p>
+<hr />
+<h2 id="be-aware-of-tcp-wrappers">7. Be Aware of TCP Wrappers</h2>
+<p>Covered in 110.1; mentioned again here because it’s part of
+host-security history.</p>
+<ul>
+<li><p>Library: <code>libwrap</code>.</p></li>
+<li><p>Config files: <code>/etc/hosts.allow</code> and
+<code>/etc/hosts.deny</code>.</p></li>
+<li><p>Rule of evaluation: <strong>hosts.allow first</strong>, then
+<strong>hosts.deny</strong>. If neither matches, access is
+allowed.</p></li>
+<li><p>The classic safest deny-by-default setup:</p>
+<pre><code># /etc/hosts.deny
+ALL: ALL
+# /etc/hosts.allow
+sshd: 192.168.1.0/24</code></pre></li>
+<li><p>Today largely replaced by host firewalls (<code>nftables</code>,
+<code>iptables</code>, <code>firewalld</code>,
+<code>ufw</code>).</p></li>
+</ul>
+<hr />
+<h2 id="a-brief-word-on-firewalls">8. A Brief Word on Firewalls</h2>
+<p>The 110.2 objective mentions <strong>awareness</strong> of firewalls
+— full detail is in objective 110.3 / advanced. The point here is that
+<strong>disabling unused services</strong> plus <strong>a firewall on
+the host</strong> is the standard belt-and-braces for host security.</p>
+<p>You should recognize at least:</p>
+<ul>
+<li><strong>iptables / nftables</strong> — the kernel firewall
+framework.</li>
+<li><strong>firewalld</strong> — high-level frontend (RHEL/Fedora).</li>
+<li><strong>ufw</strong> — high-level frontend (Ubuntu).</li>
+</ul>
+<p>A simple default policy: drop everything inbound, allow ESTABLISHED,
+allow SSH.</p>
+<hr />
+<h2 id="find-and-remove-suspect-files">9. Find and Remove Suspect
+Files</h2>
+<p>Recap from 110.1: the things you check during a host-security
+review.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Unowned files (orphaned UID/GID)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-nouser</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-nogroup</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># World-writable files</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-type</span> f <span class="at">-perm</span> <span class="at">-002</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># SUID and SGID</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-perm</span> <span class="at">-4000</span> <span class="at">-type</span> f <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> / <span class="at">-perm</span> <span class="at">-2000</span> <span class="at">-type</span> f <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Recently modified system binaries</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> /usr/bin <span class="at">-mtime</span> <span class="at">-1</span></span></code></pre></div>
+<hr />
+<h2 id="information-sources-for-security-updates">10. Information
+Sources for Security Updates</h2>
+<p>The objective explicitly mentions being <strong>aware of security
+alerts and best practices</strong>. Recognize at least:</p>
+<ul>
+<li><strong>CERT</strong> (Computer Emergency Response Team) —
+historically <code>CERT/CC</code> at Carnegie Mellon. National CERTs
+exist worldwide.</li>
+<li><strong>CVE</strong> (Common Vulnerabilities and Exposures) — the
+standard catalog of vulnerabilities, identified as
+<code>CVE-YYYY-NNNNN</code>.</li>
+<li><strong>Bugtraq</strong> — old mailing list, classic source for
+vulnerability disclosures.</li>
+<li><strong>Distribution security advisories</strong> — Debian DSA, Red
+Hat RHSA, Ubuntu USN.</li>
+</ul>
+<p>In practice, the system administrator subscribes to the
+distribution’s security mailing list and applies updates promptly.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">11. Quick Reference for the
+Exam</h2>
+<p><strong>Concepts:</strong></p>
+<ul>
+<li>Shadow passwords (<code>pwconv</code>, <code>pwunconv</code>).</li>
+<li>Disabling/masking services with <code>systemctl</code>.</li>
+<li>Legacy super-servers: inetd (<code>/etc/inetd.conf</code>) and
+xinetd (<code>/etc/xinetd.d/</code>).</li>
+<li><code>/etc/securetty</code>, <code>/etc/nologin</code>.</li>
+<li><code>PermitRootLogin</code>, <code>PermitEmptyPasswords</code> in
+<code>sshd_config</code>.</li>
+<li>Awareness of PAM, NIS, TCP Wrappers, host firewalls.</li>
+<li>CVE / CERT terminology.</li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>systemctl stop|disable|mask</code></li>
+<li><code>pwconv</code>, <code>pwunconv</code>, <code>grpconv</code>,
+<code>grpunconv</code></li>
+<li><code>chage</code>, <code>passwd -l</code></li>
+<li><code>find</code> recipes from 110.1</li>
+</ul>
+<p><strong>Files:</strong></p>
+<ul>
+<li><code>/etc/passwd</code>, <code>/etc/shadow</code>,
+<code>/etc/group</code>, <code>/etc/gshadow</code></li>
+<li><code>/etc/inetd.conf</code></li>
+<li><code>/etc/xinetd.conf</code>, <code>/etc/xinetd.d/</code></li>
+<li><code>/etc/securetty</code></li>
+<li><code>/etc/nologin</code></li>
+<li><code>/etc/login.defs</code></li>
+<li><code>/etc/pam.d/</code></li>
+<li><code>/etc/hosts.allow</code>, <code>/etc/hosts.deny</code></li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">12. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>What is the purpose of the shadow password
+suite?</strong> To move encrypted password hashes from the
+world-readable <code>/etc/passwd</code> into <code>/etc/shadow</code>,
+which only root can read.</p></li>
+<li><p><strong>What commands convert a system to and from the shadow
+password suite?</strong> <code>pwconv</code> enables shadow;
+<code>pwunconv</code> reverses it. Group equivalents are
+<code>grpconv</code> / <code>grpunconv</code>.</p></li>
+<li><p><strong>What file lists the terminals on which root may log
+in?</strong> <code>/etc/securetty</code>.</p></li>
+<li><p><strong>What does the existence of <code>/etc/nologin</code>
+cause?</strong> Prevents all non-root users from logging in; its
+contents are shown to them.</p></li>
+<li><p><strong>What does <code>systemctl mask SERVICE</code> do that
+<code>disable</code> doesn’t?</strong> <code>mask</code> makes the unit
+impossible to start — even by another service that depends on it.
+<code>disable</code> only stops it from starting at boot; another unit
+may still pull it in.</p></li>
+<li><p><strong>How do you disable a service in
+<code>xinetd</code>?</strong> Set <code>disable = yes</code> in the
+service’s file under <code>/etc/xinetd.d/</code> and reload
+xinetd.</p></li>
+<li><p><strong>How do you disable a service in classic
+<code>inetd</code>?</strong> Comment out (<code>#</code>) its line in
+<code>/etc/inetd.conf</code> and reload inetd.</p></li>
+<li><p><strong>Where do you turn off direct root login over
+SSH?</strong> In <code>/etc/ssh/sshd_config</code>, set
+<code>PermitRootLogin no</code>.</p></li>
+<li><p><strong>What file holds the system-wide defaults for password
+aging?</strong> <code>/etc/login.defs</code> — keys like
+<code>PASS_MAX_DAYS</code>, <code>PASS_MIN_DAYS</code>,
+<code>PASS_WARN_AGE</code>.</p></li>
+<li><p><strong>What is the role of PAM?</strong> A modular framework
+that handles authentication and related policies (password quality,
+account locking, resource limits) for system services. Configured under
+<code>/etc/pam.d/</code>.</p></li>
+<li><p><strong>What is NIS, and why is it considered obsolete?</strong>
+Network Information Service — a centralized account-distribution system,
+predecessor to LDAP. It is insecure (essentially unencrypted) and has
+been replaced by LDAP and similar.</p></li>
+<li><p><strong>What is a CVE?</strong> A Common Vulnerabilities and
+Exposures identifier — a unique label (<code>CVE-YYYY-NNNNN</code>) for
+a publicly known security flaw.</p></li>
+<li><p><strong>What is CERT?</strong> A Computer Emergency Response Team
+— an organization that coordinates vulnerability reports and responses.
+The original is CERT/CC at Carnegie Mellon.</p></li>
+<li><p><strong>A user has an empty password field in
+<code>/etc/shadow</code>. What is wrong, and how do you fix it?</strong>
+No password is required to log in as this user. Set a password with
+<code>passwd USER</code>, or lock the account with
+<code>passwd -l USER</code> while you investigate.</p></li>
+<li><p><strong>What is the order of evaluation between
+<code>/etc/hosts.allow</code> and <code>/etc/hosts.deny</code>?</strong>
+<code>hosts.allow</code> is consulted first; a matching rule there
+grants access. Otherwise <code>hosts.deny</code> is consulted. If
+neither file matches, the connection is allowed.</p></li>
+</ol>
+</body>
+</html>

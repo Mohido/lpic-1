@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>105.1 Customize and Use the Shell Environment</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">105.1 Customize and Use the Shell Environment</h1>
+</header>
+<h1 id="customize-and-use-the-shell-environment">105.1 Customize and Use
+the Shell Environment</h1>
+<p><strong>Weight: 4</strong></p>
+<p><strong>Goal:</strong> Customize shell environments to meet users’
+needs, and modify global and user profiles.</p>
+<hr />
+<h2 id="what-is-a-shell">1. What is a Shell?</h2>
+<p>A <strong>shell</strong> is a program that takes commands you type
+and passes them to the operating system to run. The default shell on
+most Linux systems is <strong>Bash</strong> (Bourne Again Shell).</p>
+<p>There are two kinds of shell sessions you need to know:</p>
+<ul>
+<li><strong>Login shell:</strong> Started when you log in (via console,
+SSH, or <code>su -</code>). It reads login-specific configuration
+files.</li>
+<li><strong>Non-login shell (interactive):</strong> Started when you
+open a new terminal window inside an already-logged-in session, or run
+<code>bash</code> manually. It reads a different set of files.</li>
+</ul>
+<p>This distinction is the <strong>core</strong> of this objective — it
+determines which configuration files get read.</p>
+<hr />
+<h2 id="shell-configuration-files">2. Shell Configuration Files</h2>
+<p>Configuration files set up your environment (variables, aliases,
+functions, prompt, etc.). There are <strong>global</strong> files (apply
+to all users) and <strong>user</strong> files (apply only to one
+user).</p>
+<h3 id="global-configuration-files">Global configuration files</h3>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>When it runs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/profile</code></td>
+<td>Read once at <strong>login</strong>. Sets system-wide environment
+variables (like <code>PATH</code>).</td>
+</tr>
+<tr class="even">
+<td><code>/etc/bash.bashrc</code></td>
+<td>Read by <strong>non-login interactive</strong> Bash shells. (On Red
+Hat-based systems this file is <code>/etc/bashrc</code>.)</td>
+</tr>
+<tr class="odd">
+<td><code>/etc/profile.d/</code></td>
+<td>Directory of <code>.sh</code> scripts sourced by
+<code>/etc/profile</code>. A clean way to add system-wide settings
+without editing <code>/etc/profile</code> directly.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="user-configuration-files-in-the-users-home-directory">User
+configuration files (in the user’s home directory <code>~</code>)</h3>
+<p><strong>Login shell</strong> reads, in this order, the <strong>first
+one that exists</strong>:</p>
+<ol type="1">
+<li><code>~/.bash_profile</code></li>
+<li><code>~/.bash_login</code></li>
+<li><code>~/.profile</code></li>
+</ol>
+<p><strong>Non-login interactive shell</strong> reads:</p>
+<ul>
+<li><code>~/.bashrc</code></li>
+</ul>
+<p><strong>On logout</strong> from a login shell:</p>
+<ul>
+<li><code>~/.bash_logout</code> is read (used for cleanup commands like
+clearing the screen).</li>
+</ul>
+<h3 id="the-common-trick-sourcing-.bashrc-from-.bash_profile">The common
+trick: sourcing <code>.bashrc</code> from
+<code>.bash_profile</code></h3>
+<p>Because login shells do <strong>not</strong> automatically read
+<code>~/.bashrc</code>, most distributions put this snippet in
+<code>~/.bash_profile</code>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-f</span> ~/.bashrc <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">.</span> ~/.bashrc</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div>
+<p>This way, both login and non-login shells end up loading
+<code>~/.bashrc</code>, and you only need to maintain settings in one
+place.</p>
+<h3 id="summary-diagram-of-load-order">Summary diagram of load
+order</h3>
+<pre><code>Login shell:
+  /etc/profile  →  /etc/profile.d/*.sh  →  ~/.bash_profile (or ~/.bash_login, or ~/.profile)
+                                                    │
+                                                    └─► usually sources ~/.bashrc
+                                                                              │
+                                                                              └─► usually sources /etc/bashrc
+
+Non-login interactive shell:
+  /etc/bash.bashrc  →  ~/.bashrc
+
+Logout of login shell:
+  ~/.bash_logout</code></pre>
+<hr />
+<h2 id="sourcing-files-source-and-.">3. Sourcing Files:
+<code>source</code> and <code>.</code></h2>
+<p>When you edit a config file, the changes do <strong>not</strong>
+apply to your current shell until you reload it. You reload by
+<strong>sourcing</strong> the file.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or, equivalently:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span> ~/.bashrc</span></code></pre></div>
+<ul>
+<li><code>.</code> (a single dot) and <code>source</code> do
+<strong>exactly the same thing</strong>.</li>
+<li>Sourcing runs the file’s commands in the <strong>current
+shell</strong>, so any variables/functions it defines stay with
+you.</li>
+<li>Running it as a script (e.g. <code>./script.sh</code>) runs it in a
+<strong>child shell</strong>, and changes vanish when the child
+exits.</li>
+</ul>
+<p><strong>Remember for the exam:</strong> <code>.</code> is not the
+same as <code>./</code>. The dot alone (followed by a space and a
+filename) means “source this file.”</p>
+<hr />
+<h2 id="environment-variables-vs.-shell-variables">4. Environment
+Variables vs. Shell Variables</h2>
+<p>Bash has two kinds of variables:</p>
+<ul>
+<li><strong>Shell variable:</strong> Exists only in the current shell.
+Child processes (other commands you run) cannot see it.</li>
+<li><strong>Environment variable:</strong> Exported to child processes
+too.</li>
+</ul>
+<h3 id="creating-and-using-variables">Creating and using variables</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">MYVAR</span><span class="op">=</span><span class="st">&quot;hello&quot;</span>            <span class="co"># shell variable</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$MYVAR</span>              <span class="co"># → hello</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MYVAR</span>             <span class="co"># promote to environment variable</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">OTHER</span><span class="op">=</span><span class="st">&quot;world&quot;</span>     <span class="co"># create and export in one step</span></span></code></pre></div>
+<h3 id="set-env-export-unset"><code>set</code>, <code>env</code>,
+<code>export</code>, <code>unset</code></h3>
+<table>
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>set</code></td>
+<td>Lists <strong>all</strong> shell variables and functions (and
+changes shell options).</td>
+</tr>
+<tr class="even">
+<td><code>env</code></td>
+<td>Lists only <strong>environment</strong> variables. Can also run a
+command with a modified environment.</td>
+</tr>
+<tr class="odd">
+<td><code>export VAR</code></td>
+<td>Marks <code>VAR</code> as an environment variable so child processes
+inherit it. <code>export -p</code> lists exported variables.</td>
+</tr>
+<tr class="even">
+<td><code>unset VAR</code></td>
+<td>Removes a variable (works for both shell and environment
+variables).</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> FOO=bar</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$FOO</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bar</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bash         <span class="co"># start a child shell</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$FOO</span>    <span class="co"># empty — child can&#39;t see it</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> exit</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> export FOO</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bash</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$FOO</span>    <span class="co"># now → bar</span></span></code></pre></div>
+<h3 id="important-environment-variables">Important environment
+variables</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>PATH</code></td>
+<td>Colon-separated list of directories to search for commands.</td>
+</tr>
+<tr class="even">
+<td><code>HOME</code></td>
+<td>The current user’s home directory.</td>
+</tr>
+<tr class="odd">
+<td><code>USER</code> / <code>LOGNAME</code></td>
+<td>Current username.</td>
+</tr>
+<tr class="even">
+<td><code>SHELL</code></td>
+<td>Path to the user’s login shell.</td>
+</tr>
+<tr class="odd">
+<td><code>PWD</code></td>
+<td>Current working directory.</td>
+</tr>
+<tr class="even">
+<td><code>PS1</code></td>
+<td>Primary prompt string.</td>
+</tr>
+<tr class="odd">
+<td><code>LANG</code> / <code>LC_*</code></td>
+<td>Language and locale settings.</td>
+</tr>
+<tr class="even">
+<td><code>EDITOR</code></td>
+<td>Default text editor for other programs.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-path-variable">5. The <code>PATH</code> Variable</h2>
+<p><code>PATH</code> tells the shell where to look for executables.
+Example:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="va">$PATH</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span></span></code></pre></div>
+<p>When you type <code>ls</code>, the shell looks in each of those
+directories (left to right) and runs the first <code>ls</code> it
+finds.</p>
+<h3 id="adding-a-directory-to-path">Adding a directory to PATH</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$PATH</span><span class="st">:/opt/myapp/bin&quot;</span>        <span class="co"># append</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">&quot;/opt/myapp/bin:</span><span class="va">$PATH</span><span class="st">&quot;</span>        <span class="co"># prepend (searched first)</span></span></code></pre></div>
+<p>Put this line in <code>~/.bash_profile</code> (or
+<code>~/.bashrc</code>) to make it permanent.</p>
+<h3 id="running-a-command-outside-path">Running a command outside
+PATH</h3>
+<p>If a program is not in any <code>PATH</code> directory, you must give
+its location explicitly:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./myscript.sh</span>           <span class="co"># in the current directory</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/home/alice/tool</span>        <span class="co"># absolute path</span></span></code></pre></div>
+<p>The leading <code>./</code> is required because, for security, the
+current directory is <strong>not</strong> in <code>PATH</code> by
+default.</p>
+<hr />
+<h2 id="aliases">6. Aliases</h2>
+<p>An <strong>alias</strong> is a short name for a longer command.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> ll=<span class="st">&#39;ls -l --color=auto&#39;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> rm=<span class="st">&#39;rm -i&#39;</span>           <span class="co"># always ask before deleting</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> ..=<span class="st">&#39;cd ..&#39;</span></span></code></pre></div>
+<ul>
+<li><code>alias</code> with no arguments lists all current aliases.</li>
+<li><code>unalias NAME</code> removes one. <code>unalias -a</code>
+removes them all.</li>
+<li>To make an alias permanent, put it in <code>~/.bashrc</code>.</li>
+<li>To bypass an alias once, prefix the command with a backslash:
+<code>\rm file.txt</code>.</li>
+</ul>
+<hr />
+<h2 id="functions">7. Functions</h2>
+<p>A <strong>function</strong> is a reusable group of commands. Use it
+when an alias is not enough (for example, when you need parameters or
+logic).</p>
+<h3 id="two-equivalent-syntaxes">Two equivalent syntaxes</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Form 1 (POSIX-compatible)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">greet()</span> <span class="kw">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Form 2 (Bash-specific)</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span><span class="fu"> greet</span> <span class="kw">{</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Hello, </span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h3 id="using-a-function">Using a function</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> greet Alice</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Hello,</span> Alice</span></code></pre></div>
+<ul>
+<li><code>$1</code>, <code>$2</code>, … are the function’s
+arguments.</li>
+<li><code>$#</code> is the number of arguments.</li>
+<li><code>$@</code> is all arguments.</li>
+<li>Define functions in <code>~/.bashrc</code> to keep them available in
+every shell.</li>
+</ul>
+<h3 id="listing-and-removing-functions">Listing and removing
+functions</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">declare</span> <span class="at">-f</span>              <span class="co"># list all defined functions</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">declare</span> <span class="at">-f</span> <span class="va">greet</span>        <span class="co"># show the body of one function</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">unset</span> <span class="at">-f</span> <span class="va">greet</span>          <span class="co"># remove the function</span></span></code></pre></div>
+<hr />
+<h2 id="skeleton-directory-etcskel">8. Skeleton Directory:
+<code>/etc/skel/</code></h2>
+<p>When you create a new user with <code>useradd -m</code>, the contents
+of <code>/etc/skel/</code> are <strong>copied</strong> into the new
+user’s home directory. This is how every new user gets a default
+<code>~/.bashrc</code>, <code>~/.bash_profile</code>, etc.</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-A</span> /etc/skel/</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.bash_logout</span>  .bashrc  .profile</span></code></pre></div>
+<p>To give every new user a custom default (for example, a company-wide
+alias), edit or add files in <code>/etc/skel/</code>. This affects
+<strong>future</strong> users only — existing users are unaffected.</p>
+<hr />
+<h2 id="useful-commands-for-this-objective">9. Useful Commands for This
+Objective</h2>
+<h3 id="type-show-what-a-command-is"><code>type</code> — show what a
+command is</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> type ls</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> is aliased to <span class="st">&#39;ls --color=auto&#39;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> type cd</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> is a shell builtin</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> type bash</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> is /usr/bin/bash</span></code></pre></div>
+<p>Possible categories: <strong>alias</strong>,
+<strong>keyword</strong>, <strong>function</strong>,
+<strong>builtin</strong>, <strong>file</strong>.</p>
+<h3 id="which-find-an-executable-in-path"><code>which</code> — find an
+executable in PATH</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> which python3</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/bin/python3</span></span></code></pre></div>
+<p><code>which</code> only finds executables on disk; it does not see
+aliases, functions, or builtins. Use <code>type</code> for those.</p>
+<h3 id="echo-print-text-or-variable-values"><code>echo</code> — print
+text or variable values</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> echo <span class="st">&quot;User is </span><span class="va">$USER</span><span class="st">&quot;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">User</span> is alice</span></code></pre></div>
+<hr />
+<h2 id="quick-reference-files-and-commands-for-the-exam">10. Quick
+Reference: Files and Commands for the Exam</h2>
+<p><strong>Files (memorize these):</strong></p>
+<ul>
+<li><code>.</code> (dot — sources a file)</li>
+<li><code>source</code> (same as <code>.</code>)</li>
+<li><code>/etc/bash.bashrc</code></li>
+<li><code>/etc/profile</code></li>
+<li><code>~/.bash_profile</code></li>
+<li><code>~/.bash_login</code></li>
+<li><code>~/.profile</code></li>
+<li><code>~/.bashrc</code></li>
+<li><code>~/.bash_logout</code></li>
+<li><code>/etc/skel/</code></li>
+</ul>
+<p><strong>Commands and keywords:</strong></p>
+<ul>
+<li><code>env</code></li>
+<li><code>export</code></li>
+<li><code>set</code></li>
+<li><code>unset</code></li>
+<li><code>function</code></li>
+<li><code>alias</code></li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">11. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>Which file is read first when a user logs in:
+<code>~/.bash_profile</code>, <code>~/.bash_login</code>, or
+<code>~/.profile</code>?</strong> <code>~/.bash_profile</code>. The
+shell reads the <strong>first one that exists</strong> in that order,
+and stops there.</p></li>
+<li><p><strong>What is the difference between <code>set</code> and
+<code>env</code>?</strong> <code>set</code> lists all shell variables,
+functions, and shell options. <code>env</code> lists only exported
+(environment) variables.</p></li>
+<li><p><strong>What does <code>source ~/.bashrc</code> do, and what is
+its short form?</strong> It reads and executes <code>~/.bashrc</code> in
+the current shell. Short form: <code>. ~/.bashrc</code>.</p></li>
+<li><p><strong>You add <code>alias ll='ls -l'</code> to
+<code>~/.bashrc</code>. Why doesn’t it work in your current
+terminal?</strong> The file has not been re-read. Run
+<code>source ~/.bashrc</code> or open a new shell.</p></li>
+<li><p><strong>Where do you place files that should appear in every new
+user’s home directory?</strong> <code>/etc/skel/</code>.</p></li>
+<li><p><strong>How do you make <code>PATH</code> permanently include
+<code>/opt/bin</code> for one user?</strong> Add
+<code>export PATH="$PATH:/opt/bin"</code> to
+<code>~/.bash_profile</code> (or <code>~/.bashrc</code>).</p></li>
+<li><p><strong>How do you write a function that prints its first
+argument?</strong></p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show()</span> <span class="kw">{</span> <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span><span class="kw">;</span> <span class="kw">}</span></span></code></pre></div></li>
+<li><p><strong>What does <code>unset FOO</code> do?</strong> Removes the
+variable <code>FOO</code> from the shell (whether or not it was
+exported).</p></li>
+</ol>
+</body>
+</html>
