@@ -56,7 +56,7 @@ jobs:
                       pages.append((rel, label))
 
           items = "\n".join(
-              f'      <li><a href="{html.escape(p)}">{html.escape(l)}</a></li>'
+              f'      <li><a href="html/{html.escape(p)}">{html.escape(l)}</a></li>'
               for p, l in pages
           )
 
@@ -84,7 +84,7 @@ jobs:
           </html>
           """
 
-          with open("html/index.html", "w") as fh:
+          with open("index.html", "w") as fh:
               fh.write(index)
 
           print(f"index.html written with {len(pages)} entries")
@@ -94,7 +94,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add html/
+          git add html/ index.html
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "ci: rebuild HTML from markdown [skip ci]"
           git push
