@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>107.3 Localisation and Internationalisation</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">107.3 Localisation and Internationalisation</h1>
+</header>
+<h1 id="localisation-and-internationalisation">107.3 Localisation and
+Internationalisation</h1>
+<p><strong>Weight: 3</strong></p>
+<p><strong>Goal:</strong> Configure the locale and time zone settings on
+a Linux system.</p>
+<hr />
+<h2 id="two-related-but-distinct-concepts">1. Two Related but Distinct
+Concepts</h2>
+<table>
+<colgroup>
+<col style="width: 46%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th>Means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Internationalisation (i18n)</strong></td>
+<td>Designing software so it <strong>can</strong> support multiple
+languages, character sets, and regional formats.</td>
+</tr>
+<tr class="even">
+<td><strong>Localisation (l10n)</strong></td>
+<td>The act of <strong>adapting</strong> a system to a specific
+language, country, and conventions.</td>
+</tr>
+</tbody>
+</table>
+<p>In practice, the exam is about three things you actually configure on
+a Linux system:</p>
+<ol type="1">
+<li>The <strong>time zone</strong>.</li>
+<li>The <strong>locale</strong> (language, character encoding,
+formatting rules).</li>
+<li>The <strong>character set</strong> (UTF-8 vs. older encodings).</li>
+</ol>
+<hr />
+<h2 id="time-zone">2. Time Zone</h2>
+<h3 id="the-hardware-clock-vs.-the-system-clock">The hardware clock
+vs. the system clock</h3>
+<p>A Linux machine has two clocks:</p>
+<ul>
+<li><strong>Hardware (RTC) clock</strong> — kept by the motherboard
+battery. Read at boot.</li>
+<li><strong>System clock</strong> — kept by the kernel while the system
+is running.</li>
+</ul>
+<p>The hardware clock can be set to either <strong>UTC</strong>
+(recommended for Linux-only systems) or <strong>local time</strong>
+(common when dual-booting Windows). Linux always works internally in UTC
+and converts to local time using the time zone setting.</p>
+<h3 id="time-zone-files">Time zone files</h3>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/usr/share/zoneinfo/</code></td>
+<td>Binary database of all time zones, organized as
+<code>Region/City</code> (e.g. <code>Europe/Paris</code>,
+<code>America/New_York</code>, <code>Asia/Tokyo</code>,
+<code>UTC</code>).</td>
+</tr>
+<tr class="even">
+<td><code>/etc/localtime</code></td>
+<td>The <strong>active</strong> time zone — a copy of, or a symlink to,
+a file under <code>/usr/share/zoneinfo/</code>. Programs read this to
+know the local time zone.</td>
+</tr>
+<tr class="odd">
+<td><code>/etc/timezone</code></td>
+<td>A <strong>plain text file</strong> containing the name of the time
+zone, e.g. <code>Europe/Paris</code>. Used on Debian-based systems; not
+present on all distributions.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="setting-the-time-zone">Setting the time zone</h3>
+<p>Method 1 — modern (systemd):</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> list-timezones                  <span class="co"># browse available zones</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span> set-timezone Europe/Paris       <span class="co"># set the system time zone</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">timedatectl</span>                                 <span class="co"># show current settings</span></span></code></pre></div>
+<p>Method 2 — manual (works everywhere):</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-sf</span> /usr/share/zoneinfo/Europe/Paris /etc/localtime</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Europe/Paris&quot;</span> <span class="op">&gt;</span> /etc/timezone         <span class="co"># Debian/Ubuntu</span></span></code></pre></div>
+<p>Method 3 — interactive (Debian/Ubuntu):</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dpkg-reconfigure</span> tzdata</span></code></pre></div>
+<h3 id="the-tz-environment-variable">The <code>TZ</code> environment
+variable</h3>
+<p>Setting <code>TZ</code> in a shell <strong>overrides</strong> the
+system time zone for that session only:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> date</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Mon</span> May 11 14:00:00 CEST 2026</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> TZ=Asia/Tokyo date</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Mon</span> May 11 21:00:00 JST 2026</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> export TZ=UTC               <span class="co"># affects this shell from now on</span></span></code></pre></div>
+<p>Useful for scripts that need to print times in a specific zone
+without changing the whole system.</p>
+<h3 id="time-related-commands">Time-related commands</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>date</code></td>
+<td>Show or set the system clock. <code>date</code>,
+<code>date +%Y-%m-%d</code>, <code>date -u</code> (UTC).</td>
+</tr>
+<tr class="even">
+<td><code>hwclock</code></td>
+<td>Show or set the hardware clock. <code>hwclock --show</code>,
+<code>hwclock --systohc</code>, <code>hwclock --hctosys</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>timedatectl</code></td>
+<td>The systemd tool to manage time, time zone, and NTP
+synchronization.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="locale-language-and-regional-formatting">3. Locale: Language and
+Regional Formatting</h2>
+<p>A <strong>locale</strong> controls how programs display dates,
+numbers, sort strings, what language they speak, and what character
+encoding they use.</p>
+<h3 id="locale-name-format">Locale name format</h3>
+<pre><code>language[_TERRITORY][.codeset][@modifier]</code></pre>
+<p>Examples:</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Locale</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>C</code></td>
+<td>The default “raw” POSIX locale. English, ASCII, no formatting
+frills. Scripts that need predictable output should set
+<code>LC_ALL=C</code>.</td>
+</tr>
+<tr class="even">
+<td><code>POSIX</code></td>
+<td>Synonym of <code>C</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>en_US.UTF-8</code></td>
+<td>American English, UTF-8 encoding.</td>
+</tr>
+<tr class="even">
+<td><code>en_GB.UTF-8</code></td>
+<td>British English, UTF-8 encoding.</td>
+</tr>
+<tr class="odd">
+<td><code>fr_FR.UTF-8</code></td>
+<td>French (France), UTF-8.</td>
+</tr>
+<tr class="even">
+<td><code>de_DE.UTF-8</code></td>
+<td>German (Germany), UTF-8.</td>
+</tr>
+<tr class="odd">
+<td><code>ja_JP.UTF-8</code></td>
+<td>Japanese, UTF-8.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="locale-environment-variables">Locale environment variables</h3>
+<p>A locale isn’t one setting — it’s a <strong>set</strong> of
+variables, one per category. You can set them all at once with
+<code>LANG</code>, override one or more with <code>LC_*</code>, or
+override <strong>everything</strong> with <code>LC_ALL</code>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Controls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>LANG</code></td>
+<td>Default value for all <code>LC_*</code> variables that aren’t set
+explicitly.</td>
+</tr>
+<tr class="even">
+<td><code>LC_CTYPE</code></td>
+<td>Character classification and encoding.</td>
+</tr>
+<tr class="odd">
+<td><code>LC_COLLATE</code></td>
+<td>String sorting order.</td>
+</tr>
+<tr class="even">
+<td><code>LC_TIME</code></td>
+<td>Date and time formatting.</td>
+</tr>
+<tr class="odd">
+<td><code>LC_NUMERIC</code></td>
+<td>Decimal separator and thousands grouping.</td>
+</tr>
+<tr class="even">
+<td><code>LC_MONETARY</code></td>
+<td>Currency formatting.</td>
+</tr>
+<tr class="odd">
+<td><code>LC_MESSAGES</code></td>
+<td>Language of program messages.</td>
+</tr>
+<tr class="even">
+<td><code>LC_PAPER</code>, <code>LC_NAME</code>,
+<code>LC_ADDRESS</code>, <code>LC_TELEPHONE</code>,
+<code>LC_MEASUREMENT</code>, <code>LC_IDENTIFICATION</code></td>
+<td>Paper size, name/address formats, units, etc.</td>
+</tr>
+<tr class="odd">
+<td><code>LC_ALL</code></td>
+<td><strong>Overrides every <code>LC_*</code> and
+<code>LANG</code>.</strong> Use sparingly — only for forcing a locale in
+a script.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="precedence">Precedence</h3>
+<pre><code>LC_ALL    &gt;    LC_*    &gt;    LANG    &gt;    &quot;C&quot;  (default if nothing set)</code></pre>
+<p>So if <code>LC_ALL=C</code> is set, <strong>all</strong> other
+settings are ignored.</p>
+<h3 id="the-locale-command">The <code>locale</code> command</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">locale</span>                  <span class="co"># show all current locale variables</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">locale</span> <span class="at">-a</span>               <span class="co"># list all locales installed on the system</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">locale</span> <span class="at">-m</span>               <span class="co"># list available character maps (UTF-8, ISO-8859-1, ...)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="va">LANG</span><span class="op">=</span>fr_FR.UTF-8 <span class="fu">date</span>   <span class="co"># run one command in a different locale</span></span></code></pre></div>
+<h3 id="configuration-files">Configuration files</h3>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/locale.conf</code></td>
+<td>System-wide default locale (modern systemd-based systems, e.g. RHEL,
+Fedora, Arch). Usually contains <code>LANG=en_US.UTF-8</code>.</td>
+</tr>
+<tr class="even">
+<td><code>/etc/default/locale</code></td>
+<td>Same role on Debian/Ubuntu.</td>
+</tr>
+<tr class="odd">
+<td><code>/etc/locale.gen</code></td>
+<td>List of locales to be <strong>generated</strong> (Debian/Ubuntu).
+Lines starting with <code>#</code> are skipped.</td>
+</tr>
+<tr class="even">
+<td><code>~/.profile</code>, <code>~/.bash_profile</code></td>
+<td>A user can set <code>LANG</code> or <code>LC_*</code> here to
+override the system default for themselves.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="generating-and-switching-locales">Generating and switching
+locales</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Debian / Ubuntu</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dpkg-reconfigure locales              <span class="co"># interactive menu</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> locale-gen en_US.UTF-8 fr_FR.UTF-8    <span class="co"># generate listed locales</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> update-locale LANG=fr_FR.UTF-8        <span class="co"># set system default</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Modern systemd</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> localectl list-locales</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> localectl set-locale LANG=fr_FR.UTF-8</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># RHEL / Fedora — install the language pack first</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dnf install glibc-langpack-fr</span></code></pre></div>
+<hr />
+<h2 id="character-encoding">4. Character Encoding</h2>
+<p>A <strong>character encoding</strong> maps numbers stored on disk to
+characters on screen.</p>
+<h3 id="key-encodings-to-know">Key encodings to know</h3>
+<table>
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Encoding</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ASCII</strong></td>
+<td>The original 7-bit encoding. 128 characters (English letters,
+digits, basic punctuation). The universal baseline.</td>
+</tr>
+<tr class="even">
+<td><strong>ISO-8859-1</strong> (Latin-1)</td>
+<td>8-bit single-byte encoding for Western European languages. One byte
+= one character.</td>
+</tr>
+<tr class="odd">
+<td><strong>ISO-8859-15</strong></td>
+<td>Like ISO-8859-1 but includes the euro sign (€).</td>
+</tr>
+<tr class="even">
+<td><strong>Unicode</strong></td>
+<td>A standard that assigns a unique number (“code point”) to every
+character of every script in the world.</td>
+</tr>
+<tr class="odd">
+<td><strong>UTF-8</strong></td>
+<td>The dominant Unicode <strong>encoding</strong> on Linux. Variable
+length: 1 byte for ASCII, up to 4 bytes for other characters.
+<strong>ASCII-compatible.</strong></td>
+</tr>
+<tr class="even">
+<td><strong>UTF-16, UTF-32</strong></td>
+<td>Other Unicode encodings. Rare on Linux.</td>
+</tr>
+</tbody>
+</table>
+<p>UTF-8 is the <strong>modern default everywhere</strong>. New Linux
+systems use locales ending in <code>.UTF-8</code>.</p>
+<h3 id="inspecting-and-converting-files">Inspecting and converting
+files</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">file</span> mydata.txt                   <span class="co"># guesses encoding</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mydata.txt: UTF-8 Unicode text</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">iconv</span> <span class="at">-f</span> ISO-8859-1 <span class="at">-t</span> UTF-8 old.txt <span class="at">-o</span> new.txt</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert a file from Latin-1 to UTF-8.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">iconv</span> <span class="at">-l</span>                          <span class="co"># list all encodings iconv knows</span></span></code></pre></div>
+<p><code>iconv</code> is the standard tool for converting between
+encodings.</p>
+<hr />
+<h2 id="practical-scenarios">5. Practical Scenarios</h2>
+<h3 id="force-english-output-for-predictable-script-parsing">Force
+English output for predictable script parsing</h3>
+<p>Many sysadmin scripts begin with:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">LC_ALL</span><span class="op">=</span>C</span></code></pre></div>
+<p>This makes <code>date</code>, <code>grep</code>, <code>sort</code>,
+etc. produce output in plain ASCII English, regardless of the user’s
+settings. Crucial when parsing command output.</p>
+<h3 id="run-one-command-in-another-language">Run one command in another
+language</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> LANG=de_DE.UTF-8 date</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Mo</span> 11 Mai 2026 14:00:00 CEST</span></code></pre></div>
+<h3 id="sort-that-ignores-accents">Sort that ignores accents</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> LC_COLLATE=C sort file.txt        <span class="co"># strict byte order</span></span></code></pre></div>
+<p>The default locale’s sort order can group accented characters with
+their base letter — sometimes desirable, sometimes not.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">6. Quick Reference for the
+Exam</h2>
+<p><strong>Files and directories:</strong></p>
+<ul>
+<li><code>/etc/timezone</code></li>
+<li><code>/etc/localtime</code></li>
+<li><code>/usr/share/zoneinfo/</code></li>
+<li><code>/etc/locale.conf</code> (or <code>/etc/default/locale</code>
+on Debian)</li>
+<li><code>/etc/locale.gen</code></li>
+</ul>
+<p><strong>Environment variables:</strong></p>
+<ul>
+<li><code>TZ</code></li>
+<li><code>LANG</code></li>
+<li><code>LC_ALL</code></li>
+<li><code>LC_*</code> (CTYPE, COLLATE, TIME, NUMERIC, MONETARY,
+MESSAGES, …)</li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>date</code></li>
+<li><code>hwclock</code></li>
+<li><code>timedatectl</code></li>
+<li><code>tzselect</code>, <code>tzconfig</code> (older interactive
+tools)</li>
+<li><code>locale</code></li>
+<li><code>localectl</code></li>
+<li><code>locale-gen</code>, <code>update-locale</code>,
+<code>dpkg-reconfigure locales</code></li>
+<li><code>iconv</code></li>
+</ul>
+<p><strong>Encodings to recognize:</strong></p>
+<ul>
+<li>ASCII</li>
+<li>ISO-8859 (Latin-1, Latin-15)</li>
+<li>Unicode / UTF-8</li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">7. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>Where is the binary time zone database stored?</strong>
+<code>/usr/share/zoneinfo/</code>.</p></li>
+<li><p><strong>What two things can <code>/etc/localtime</code>
+be?</strong> Either a <strong>symlink</strong> to, or a
+<strong>copy</strong> of, a file under
+<code>/usr/share/zoneinfo/</code>.</p></li>
+<li><p><strong>How do you set the system time zone to
+<code>Europe/Paris</code> using systemd?</strong>
+<code>timedatectl set-timezone Europe/Paris</code>.</p></li>
+<li><p><strong>How do you override the time zone for a single command,
+without changing the system setting?</strong> Use the <code>TZ</code>
+environment variable, e.g. <code>TZ=Asia/Tokyo date</code>.</p></li>
+<li><p><strong>Which environment variable overrides all other locale
+settings?</strong> <code>LC_ALL</code>.</p></li>
+<li><p><strong>What is the precedence order between <code>LANG</code>,
+<code>LC_TIME</code>, and <code>LC_ALL</code>?</strong>
+<code>LC_ALL</code> &gt; <code>LC_TIME</code> &gt;
+<code>LANG</code>.</p></li>
+<li><p><strong>How do you list all locales installed on the
+system?</strong> <code>locale -a</code>.</p></li>
+<li><p><strong>What does setting <code>LC_ALL=C</code> do in a script,
+and why is it useful?</strong> It forces a plain POSIX/ASCII English
+locale. Output of commands becomes predictable, which is essential when
+scripts parse it.</p></li>
+<li><p><strong>Which Unicode encoding is the de facto standard on
+Linux?</strong> UTF-8.</p></li>
+<li><p><strong>How do you convert a file from ISO-8859-1 to
+UTF-8?</strong>
+<code>iconv -f ISO-8859-1 -t UTF-8 input.txt -o output.txt</code>.</p></li>
+<li><p><strong>On Debian, how do you enable and generate a new locale
+(e.g. <code>fr_FR.UTF-8</code>)?</strong> Uncomment it in
+<code>/etc/locale.gen</code>, then run <code>locale-gen</code> (or use
+<code>dpkg-reconfigure locales</code>).</p></li>
+<li><p><strong>What is the difference between the hardware clock and the
+system clock?</strong> The hardware clock is the battery-backed clock on
+the motherboard, read at boot. The system clock is maintained by the
+kernel while the system is running.</p></li>
+<li><p><strong>What command synchronizes the hardware clock from the
+system clock?</strong> <code>hwclock --systohc</code>.</p></li>
+<li><p><strong>A user reports <code>date</code> output in French. They
+want English just for their shell. What do they do?</strong> Add
+<code>export LANG=en_US.UTF-8</code> (or
+<code>export LC_ALL=en_US.UTF-8</code>) to their <code>~/.bashrc</code>
+or <code>~/.profile</code>.</p></li>
+<li><p><strong>What is the practical difference between ASCII and
+UTF-8?</strong> ASCII has 128 single-byte characters. UTF-8 is a
+variable-length Unicode encoding that is fully backward-compatible with
+ASCII but can also represent every character in the Unicode
+standard.</p></li>
+</ol>
+</body>
+</html>

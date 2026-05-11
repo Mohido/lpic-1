@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>109.2 Persistent Network Configuration</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">109.2 Persistent Network Configuration</h1>
+</header>
+<h1 id="persistent-network-configuration">109.2 Persistent Network
+Configuration</h1>
+<p><strong>Weight: 4</strong></p>
+<p><strong>Goal:</strong> Configure network settings on a Linux host so
+they survive reboots, and manage them at runtime.</p>
+<p>This objective is about <strong>how Linux stores and applies</strong>
+the network configuration you saw in 109.1.</p>
+<hr />
+<h2 id="the-many-ways-linux-configures-the-network">1. The Many Ways
+Linux Configures the Network</h2>
+<p>A single Linux machine may use any <strong>one</strong> of several
+network-management systems. The exam expects you to recognize the
+configuration files and tools used by each:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 28%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>System</th>
+<th>Used by</th>
+<th>Configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Classic Debian-style <code>ifupdown</code></td>
+<td>Debian (legacy)</td>
+<td><code>/etc/network/interfaces</code></td>
+</tr>
+<tr class="even">
+<td>Classic Red Hat-style network scripts</td>
+<td>RHEL/CentOS 7 and earlier</td>
+<td><code>/etc/sysconfig/network-scripts/ifcfg-*</code></td>
+</tr>
+<tr class="odd">
+<td><strong>NetworkManager</strong></td>
+<td>Most modern desktops</td>
+<td><code>nmcli</code>, <code>nmtui</code></td>
+</tr>
+<tr class="even">
+<td><strong>systemd-networkd</strong></td>
+<td>Modern servers, embedded</td>
+<td><code>/etc/systemd/network/*.network</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Netplan</strong></td>
+<td>Ubuntu 18.04+</td>
+<td><code>/etc/netplan/*.yaml</code> (renders to one of the above)</td>
+</tr>
+</tbody>
+</table>
+<p>You don’t have to master every one. Recognize them and know the file
+or command that goes with each.</p>
+<hr />
+<h2 id="the-debian-style-file-etcnetworkinterfaces">2. The Debian-Style
+File: <code>/etc/network/interfaces</code></h2>
+<p>Read by the <code>ifup</code> / <code>ifdown</code> commands. Each
+block configures one interface.</p>
+<pre><code># loopback
+auto lo
+iface lo inet loopback
+
+# Ethernet — DHCP
+auto eth0
+iface eth0 inet dhcp
+
+# Ethernet — static
+auto eth1
+iface eth1 inet static
+    address 192.168.1.10
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    dns-nameservers 192.168.1.1 8.8.8.8</code></pre>
+<p>Important keywords:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Keyword</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>auto IFACE</code></td>
+<td>Bring the interface up automatically at boot.</td>
+</tr>
+<tr class="even">
+<td><code>iface IFACE inet METHOD</code></td>
+<td>Define an IPv4 (<code>inet</code>) configuration. Use
+<code>inet6</code> for IPv6.</td>
+</tr>
+<tr class="odd">
+<td>Methods</td>
+<td><code>loopback</code>, <code>dhcp</code>, <code>static</code>,
+<code>manual</code></td>
+</tr>
+<tr class="even">
+<td><code>address</code>, <code>netmask</code>,
+<code>gateway</code></td>
+<td>Static IPv4 settings.</td>
+</tr>
+<tr class="odd">
+<td><code>dns-nameservers</code></td>
+<td>DNS servers (requires <code>resolvconf</code> package).</td>
+</tr>
+<tr class="even">
+<td><code>pre-up</code>, <code>up</code>, <code>down</code>,
+<code>post-down</code></td>
+<td>Commands to run at each phase.</td>
+</tr>
+</tbody>
+</table>
+<p>To apply changes: <code>ifup eth0</code>, <code>ifdown eth0</code>,
+or <code>systemctl restart networking</code>.</p>
+<hr />
+<h2 id="the-red-hat-style-files-ifcfg-">3. The Red Hat-Style Files:
+<code>ifcfg-*</code></h2>
+<p>In RHEL/CentOS 7 and earlier, each interface has its own file
+<code>/etc/sysconfig/network-scripts/ifcfg-&lt;name&gt;</code>.</p>
+<pre><code># /etc/sysconfig/network-scripts/ifcfg-eth0
+DEVICE=eth0
+NAME=eth0
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=192.168.1.10
+NETMASK=255.255.255.0
+GATEWAY=192.168.1.1
+DNS1=8.8.8.8
+DNS2=1.1.1.1</code></pre>
+<p>Important variables:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>DEVICE</code></td>
+<td>Interface name.</td>
+</tr>
+<tr class="even">
+<td><code>ONBOOT=yes/no</code></td>
+<td>Bring up at boot.</td>
+</tr>
+<tr class="odd">
+<td><code>BOOTPROTO</code></td>
+<td><code>static</code>, <code>dhcp</code>, or <code>none</code>.</td>
+</tr>
+<tr class="even">
+<td><code>IPADDR</code>, <code>NETMASK</code>, <code>GATEWAY</code></td>
+<td>Static IPv4.</td>
+</tr>
+<tr class="odd">
+<td><code>DNS1</code>, <code>DNS2</code></td>
+<td>DNS servers.</td>
+</tr>
+</tbody>
+</table>
+<p>A few global settings live in <code>/etc/sysconfig/network</code>
+(hostname, default gateway).</p>
+<p>Apply with <code>systemctl restart network</code> (older RHEL) or
+<code>nmcli connection reload</code> (when NetworkManager owns the file,
+which is the case on modern Red Hat systems).</p>
+<hr />
+<h2 id="networkmanager-and-nmcli">4. NetworkManager and
+<code>nmcli</code></h2>
+<p><strong>NetworkManager</strong> is the default network service on
+most modern Linux desktops and on recent RHEL/CentOS releases. It
+auto-detects connections, handles Wi-Fi, VPN, and Ethernet, and persists
+“connection profiles” on disk.</p>
+<h3 id="nmcli-the-command-line-tool"><code>nmcli</code> — the
+command-line tool</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span>                                  <span class="co"># overall status</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> device status                    <span class="co"># list interfaces and their state</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection show                  <span class="co"># list known connection profiles</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection show eth0             <span class="co"># details for one profile</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Bring a connection up/down</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection up eth0</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection down eth0</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a static profile</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection add type ethernet <span class="dt">\</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    con-name <span class="st">&quot;home&quot;</span> ifname eth0 <span class="dt">\</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    ipv4.method manual <span class="dt">\</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    ipv4.addresses 192.168.1.10/24 <span class="dt">\</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    ipv4.gateway 192.168.1.1 <span class="dt">\</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    ipv4.dns <span class="st">&quot;8.8.8.8 1.1.1.1&quot;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify an existing one</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection modify <span class="st">&quot;home&quot;</span> ipv4.addresses 192.168.1.20/24</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ex">nmcli</span> connection reload</span></code></pre></div>
+<p>There is also <code>nmtui</code> — a curses-based menu version of
+<code>nmcli</code>.</p>
+<p>NetworkManager stores its profiles under
+<code>/etc/NetworkManager/system-connections/</code> (per-connection
+<code>.nmconnection</code> files), but you should normally edit them
+through <code>nmcli</code>.</p>
+<hr />
+<h2 id="systemd-networkd-awareness">5. <code>systemd-networkd</code>
+(Awareness)</h2>
+<p>A lightweight network manager for servers and embedded systems.
+Configuration goes in <code>/etc/systemd/network/</code>:</p>
+<pre><code># /etc/systemd/network/20-wired.network
+[Match]
+Name=eth0
+
+[Network]
+DHCP=yes</code></pre>
+<p>Managed with <code>systemctl start/enable systemd-networkd</code>.
+You only need to <strong>recognize</strong> this system for the
+exam.</p>
+<hr />
+<h2 id="hostname">6. Hostname</h2>
+<p>The system’s hostname is the machine’s name. It is stored in two
+places:</p>
+<table>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/etc/hostname</code></td>
+<td>Modern systems — single line with the hostname.</td>
+</tr>
+<tr class="even">
+<td><code>/etc/sysconfig/network</code> (RHEL legacy)</td>
+<td>Contains <code>HOSTNAME=...</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="commands">Commands</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span>                          <span class="co"># show current hostname</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> newname                  <span class="co"># set it (temporary, until reboot)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">hostnamectl</span>                       <span class="co"># systemd: show full info</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">hostnamectl</span> set-hostname newname  <span class="co"># permanent: writes /etc/hostname</span></span></code></pre></div>
+<p><code>hostname</code> alone changes it for the running system only.
+<code>hostnamectl set-hostname</code> writes the file too, making it
+persistent.</p>
+<hr />
+<h2 id="name-resolution-configuration">7. Name Resolution
+Configuration</h2>
+<h3 id="etchosts-static-name-to-ip-mapping"><code>/etc/hosts</code> —
+static name-to-IP mapping</h3>
+<p>A plain text file that maps IP addresses to hostnames. Consulted
+before DNS on most systems.</p>
+<pre><code>127.0.0.1   localhost
+127.0.1.1   myhost.localdomain myhost
+192.168.1.50  fileserver fileserver.lan
+::1         localhost ip6-localhost ip6-loopback</code></pre>
+<p>This file is the simplest way to add a name without setting up
+DNS.</p>
+<h3
+id="etcresolv.conf-dns-resolver-configuration"><code>/etc/resolv.conf</code>
+— DNS resolver configuration</h3>
+<p>Tells the resolver which DNS servers to query.</p>
+<pre><code>nameserver 192.168.1.1
+nameserver 8.8.8.8
+search example.com lan
+domain example.com</code></pre>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Keyword</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nameserver IP</code></td>
+<td>A DNS server. List up to three; they’re tried in order.</td>
+</tr>
+<tr class="even">
+<td><code>search</code></td>
+<td>List of domain suffixes to append to single-label names.
+(<code>ping web</code> → <code>web.example.com</code>, then
+<code>web.lan</code>.)</td>
+</tr>
+<tr class="odd">
+<td><code>domain</code></td>
+<td>Single default domain. Usually overridden by
+<code>search</code>.</td>
+</tr>
+<tr class="even">
+<td><code>options</code></td>
+<td>Tuning, e.g. <code>options timeout:2 attempts:1</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important caveat:</strong> on modern systems
+<code>/etc/resolv.conf</code> is often <strong>auto-generated</strong>
+by NetworkManager, <code>systemd-resolved</code>, or
+<code>resolvconf</code>. Edits may be overwritten. The right way to
+configure DNS depends on which system manages it.</p>
+<h3
+id="etcnsswitch.conf-name-service-switch"><code>/etc/nsswitch.conf</code>
+— Name Service Switch</h3>
+<p>This file decides <strong>in what order</strong> different name
+databases are consulted. The relevant line for hostnames is
+<code>hosts:</code>.</p>
+<pre><code>hosts:    files dns</code></pre>
+<p>This means “check <code>/etc/hosts</code> first, then DNS.” Other
+databases the file can list include <code>mdns4</code> (multicast DNS),
+<code>nis</code>, <code>ldap</code>. The <code>passwd:</code> and
+<code>group:</code> lines work the same way for user/group lookups.</p>
+<hr />
+<h2 id="manual-interface-management-at-runtime">8. Manual Interface
+Management at Runtime</h2>
+<p>These commands let you change networking <strong>right now</strong>
+without touching configuration files. The changes do
+<strong>not</strong> persist across reboots.</p>
+<h3 id="modern-the-ip-command-from-iproute2">Modern: the <code>ip</code>
+command (from <code>iproute2</code>)</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> link                              <span class="co"># show interfaces (layer 2)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> link set eth0 up</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> link set eth0 down</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> addr                              <span class="co"># show interface addresses (layer 3)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> addr show eth0</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> addr add 192.168.1.10/24 dev eth0</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> addr del 192.168.1.10/24 dev eth0</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> route                             <span class="co"># show the routing table</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> route add default via 192.168.1.1</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> route add 10.0.0.0/8 via 192.168.1.254</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> route del default</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> <span class="at">-6</span> addr                           <span class="co"># IPv6 versions</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="ex">ip</span> <span class="at">-6</span> route</span></code></pre></div>
+<p><code>ip</code> is the modern replacement for the older
+<code>ifconfig</code>, <code>route</code>, and <code>arp</code>
+commands.</p>
+<h3 id="older-equivalents-still-on-the-exam">Older equivalents (still on
+the exam)</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ifconfig</span>                             <span class="co"># show interfaces</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ifconfig</span> eth0 up</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ifconfig</span> eth0 192.168.1.10 netmask 255.255.255.0</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">route</span> <span class="at">-n</span>                             <span class="co"># show routing table</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">route</span> add default gw 192.168.1.1</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">route</span> del default</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="ex">arp</span> <span class="at">-n</span>                               <span class="co"># show ARP cache (IPv4 to MAC)</span></span></code></pre></div>
+<p>These commands are provided by the <code>net-tools</code> package and
+are deprecated, but the exam still tests them.</p>
+<h3 id="ifup-ifdown"><code>ifup</code> / <code>ifdown</code></h3>
+<p>Bring an interface up or down using the configuration in
+<code>/etc/network/interfaces</code> (or NetworkManager, on systems that
+wrap them).</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ifup</span> eth0</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ifdown</span> eth0</span></code></pre></div>
+<hr />
+<h2 id="dhcp-clients">9. DHCP Clients</h2>
+<p>When an interface is set to DHCP, a <strong>DHCP client</strong> runs
+in the background to obtain and renew the lease.</p>
+<p>Common client programs:</p>
+<ul>
+<li><strong><code>dhclient</code></strong> — the ISC DHCP client.
+Configuration in <code>/etc/dhcp/dhclient.conf</code>. Lease info in
+<code>/var/lib/dhcp/dhclient.leases</code>.</li>
+<li><strong><code>dhcpcd</code></strong> — alternative client, common on
+Arch and Alpine.</li>
+<li><strong><code>systemd-networkd</code></strong> has its own built-in
+DHCP client.</li>
+<li><strong><code>pump</code></strong> — older minimalist client (rarely
+seen now).</li>
+</ul>
+<p>You normally don’t run these by hand — they are started by your
+network-management system.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">10. Quick Reference for the
+Exam</h2>
+<p><strong>Files for persistent configuration:</strong></p>
+<ul>
+<li><code>/etc/network/interfaces</code> (Debian)</li>
+<li><code>/etc/sysconfig/network-scripts/ifcfg-*</code> (Red Hat)</li>
+<li><code>/etc/sysconfig/network</code> (Red Hat — hostname, default
+gateway)</li>
+<li><code>/etc/hostname</code> and <code>/etc/sysconfig/network</code>
+(hostname)</li>
+<li><code>/etc/hosts</code> (static name-to-IP)</li>
+<li><code>/etc/resolv.conf</code> (DNS servers)</li>
+<li><code>/etc/nsswitch.conf</code> (order of lookups)</li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>ip link</code>, <code>ip addr</code>, <code>ip route</code> —
+modern</li>
+<li><code>ifconfig</code>, <code>route</code>, <code>arp</code> — legacy
+(still on exam)</li>
+<li><code>ifup</code>, <code>ifdown</code> — bring interfaces up/down
+from config</li>
+<li><code>hostname</code>, <code>hostnamectl</code></li>
+<li><code>nmcli</code>, <code>nmtui</code> — NetworkManager</li>
+<li><code>dhclient</code> — DHCP client</li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">11. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>Which file holds the system’s hostname on a modern Linux
+system?</strong> <code>/etc/hostname</code>.</p></li>
+<li><p><strong>What is the persistent way to set the hostname on a
+systemd system?</strong> <code>hostnamectl set-hostname newname</code>
+(it updates <code>/etc/hostname</code>).</p></li>
+<li><p><strong>What is the difference between <code>/etc/hosts</code>
+and <code>/etc/resolv.conf</code>?</strong> <code>/etc/hosts</code>
+provides <strong>static</strong> name-to-IP mappings on the local
+machine. <code>/etc/resolv.conf</code> lists the <strong>DNS
+servers</strong> the resolver should query for names not in
+<code>/etc/hosts</code>.</p></li>
+<li><p><strong>Which file controls the order of name lookups (hosts vs
+DNS)?</strong> <code>/etc/nsswitch.conf</code>, typically with
+<code>hosts: files dns</code>.</p></li>
+<li><p><strong>On Debian, what is the main file for persistent network
+configuration?</strong> <code>/etc/network/interfaces</code>.</p></li>
+<li><p><strong>On older Red Hat systems, where do per-interface config
+files live?</strong>
+<code>/etc/sysconfig/network-scripts/ifcfg-&lt;interface&gt;</code>.</p></li>
+<li><p><strong>Which keyword in <code>/etc/network/interfaces</code>
+says “obtain settings via DHCP”?</strong>
+<code>iface eth0 inet dhcp</code>.</p></li>
+<li><p><strong>What is the modern command-line tool for managing
+NetworkManager?</strong> <code>nmcli</code> (with <code>nmtui</code> as
+a curses UI).</p></li>
+<li><p><strong>What is the modern replacement for <code>ifconfig</code>
+and <code>route</code>?</strong> The <code>ip</code> command from the
+<code>iproute2</code> package: <code>ip addr</code>,
+<code>ip link</code>, <code>ip route</code>.</p></li>
+<li><p><strong>How do you add an IP address to <code>eth0</code> at
+runtime with <code>ip</code>?</strong>
+<code>ip addr add 192.168.1.10/24 dev eth0</code>.</p></li>
+<li><p><strong>How do you add a default route at runtime with
+<code>ip</code>?</strong>
+<code>ip route add default via 192.168.1.1</code>.</p></li>
+<li><p><strong>How do you bring <code>eth0</code> up using configuration
+from <code>/etc/network/interfaces</code>?</strong>
+<code>ifup eth0</code>.</p></li>
+<li><p><strong>In <code>/etc/resolv.conf</code>, what does the
+<code>search</code> directive do?</strong> Lists domain suffixes to
+append automatically to single-label hostnames
+(e.g. <code>search example.com</code> lets <code>ping web</code> resolve
+to <code>web.example.com</code>).</p></li>
+<li><p><strong>What does <code>BOOTPROTO=dhcp</code> mean in a Red Hat
+<code>ifcfg-</code> file?</strong> The interface obtains its
+configuration via DHCP.</p></li>
+<li><p><strong>What program typically runs in the background to handle
+DHCP on Linux?</strong> <code>dhclient</code> (the ISC DHCP client).
+Alternatives include <code>dhcpcd</code> and the built-in client in
+<code>systemd-networkd</code>.</p></li>
+<li><p><strong>You edit <code>/etc/resolv.conf</code> directly and your
+changes are gone after reboot. Why?</strong> The file is auto-generated
+by NetworkManager, <code>systemd-resolved</code>, or
+<code>resolvconf</code>. Configure DNS through the tool that manages it
+(e.g. <code>nmcli</code>, the connection’s <code>ipv4.dns</code>, or the
+relevant config file).</p></li>
+</ol>
+</body>
+</html>

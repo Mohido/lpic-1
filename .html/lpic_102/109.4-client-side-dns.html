@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>109.4 Configure Client-Side DNS</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {  background-color: #f8f8f8; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ef2929; } /* Alert */
+    code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #204a87; } /* Attribute */
+    code span.bn { color: #0000cf; } /* BaseN */
+    code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4e9a06; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #8f5902; font-style: italic; } /* Comment */
+    code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+    code span.dt { color: #204a87; } /* DataType */
+    code span.dv { color: #0000cf; } /* DecVal */
+    code span.er { color: #a40000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #0000cf; } /* Float */
+    code span.fu { color: #204a87; font-weight: bold; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+    code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+    code span.ot { color: #8f5902; } /* Other */
+    code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+    code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+    code span.ss { color: #4e9a06; } /* SpecialString */
+    code span.st { color: #4e9a06; } /* String */
+    code span.va { color: #000000; } /* Variable */
+    code span.vs { color: #4e9a06; } /* VerbatimString */
+    code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">109.4 Configure Client-Side DNS</h1>
+</header>
+<h1 id="configure-client-side-dns">109.4 Configure Client-Side DNS</h1>
+<p><strong>Weight: 2</strong></p>
+<p><strong>Goal:</strong> Configure how the local system resolves
+hostnames into IP addresses.</p>
+<p>This is a <strong>small, focused</strong> objective — only a handful
+of files and commands. Some of this overlaps with 109.2 and 109.3; the
+focus here is purely on <strong>DNS resolution from the client
+side</strong>.</p>
+<hr />
+<h2 id="what-client-side-dns-means">1. What “Client-Side DNS” Means</h2>
+<p>You are <strong>not</strong> setting up a DNS server. You are
+configuring how this machine <strong>asks</strong> name servers to
+translate names like <code>www.example.com</code> into IP addresses.</p>
+<p>There are three pieces:</p>
+<ol type="1">
+<li>A <strong>local hosts file</strong> for fixed, manual mappings.</li>
+<li>A list of <strong>DNS servers</strong> to consult, plus default
+search domains.</li>
+<li>A <strong>switch file</strong> that defines the order in which
+different sources are consulted.</li>
+</ol>
+<hr />
+<h2 id="etchosts-static-mappings">2. <code>/etc/hosts</code> — Static
+Mappings</h2>
+<p>A plain text file that maps IP addresses to hostnames. The resolver
+consults it <strong>before going to DNS</strong> on virtually every
+Linux system (because of <code>nsswitch.conf</code>).</p>
+<h3 id="format">Format</h3>
+<pre><code># IP address      hostname(s)
+127.0.0.1         localhost
+127.0.1.1         myhost.localdomain myhost
+192.168.1.50      fileserver fileserver.lan
+::1               localhost ip6-localhost ip6-loopback</code></pre>
+<ul>
+<li>One line per IP address.</li>
+<li>The first hostname is the <strong>canonical name</strong>; the rest
+are aliases.</li>
+<li>Lines starting with <code>#</code> are comments.</li>
+</ul>
+<h3 id="when-to-use-it">When to use it</h3>
+<ul>
+<li>Adding a name without setting up a real DNS server.</li>
+<li>Overriding a real DNS answer locally (e.g. to point
+<code>www.example.com</code> at a test server).</li>
+<li>Mapping localhost names.</li>
+</ul>
+<p>Edits take effect <strong>immediately</strong> — there is no service
+to reload.</p>
+<hr />
+<h2 id="etcresolv.conf-dns-servers-and-search-domains">3.
+<code>/etc/resolv.conf</code> — DNS Servers and Search Domains</h2>
+<p>Tells the resolver <strong>which DNS servers to query</strong> for
+any name not found in <code>/etc/hosts</code>.</p>
+<h3 id="format-1">Format</h3>
+<pre><code>nameserver 192.168.1.1
+nameserver 8.8.8.8
+nameserver 1.1.1.1
+search example.com lan
+domain example.com
+options timeout:2 attempts:1</code></pre>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Keyword</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nameserver IP</code></td>
+<td>A DNS server. List up to <strong>three</strong>; tried in
+order.</td>
+</tr>
+<tr class="even">
+<td><code>search dom1 dom2 ...</code></td>
+<td>Domain suffixes appended to single-label names.
+<code>ping web</code> will try <code>web.dom1</code>, then
+<code>web.dom2</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>domain NAME</code></td>
+<td>A single default domain. <strong>Mutually exclusive</strong> with
+<code>search</code> — the last one in the file wins.</td>
+</tr>
+<tr class="even">
+<td><code>options ...</code></td>
+<td>Tuning. Common: <code>timeout:N</code>, <code>attempts:N</code>,
+<code>rotate</code>, <code>ndots:N</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="search-vs-domain"><code>search</code> vs
+<code>domain</code></h3>
+<p>You use <strong>one or the other</strong>, not both.
+<code>search</code> is more flexible (it accepts multiple domains). On
+most modern systems you’ll only see <code>search</code>.</p>
+<h3 id="examples-of-search-in-action">Examples of <code>search</code> in
+action</h3>
+<p>With <code>search example.com lan</code> in
+<code>/etc/resolv.conf</code>:</p>
+<pre><code>ping web        →  tries  web.example.com  then  web.lan
+ping web.       →  trailing dot = fully qualified, no search applied
+ping web.foo    →  contains dots, treated as fully qualified</code></pre>
+<p>The <code>ndots</code> option controls when search expansion happens:
+<code>ndots:1</code> (default) means “if the name has fewer than 1 dot,
+apply the search list.”</p>
+<h3 id="the-big-caveat-etcresolv.conf-is-often-auto-generated">The big
+caveat: <code>/etc/resolv.conf</code> is often auto-generated</h3>
+<p>On modern systems, this file may be <strong>managed</strong> by
+another service:</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Manager</th>
+<th>How it manages the file</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>NetworkManager</strong></td>
+<td>Rewrites <code>/etc/resolv.conf</code> based on connection
+settings.</td>
+</tr>
+<tr class="even">
+<td><strong><code>systemd-resolved</code></strong></td>
+<td><code>/etc/resolv.conf</code> is a symlink to
+<code>/run/systemd/resolve/resolv.conf</code> or
+<code>/run/systemd/resolve/stub-resolv.conf</code> (pointing at the
+local stub on <code>127.0.0.53</code>).</td>
+</tr>
+<tr class="odd">
+<td><strong><code>resolvconf</code></strong> (package,
+Debian/Ubuntu)</td>
+<td>Generates the file from snippets supplied by clients (DHCP, openvpn,
+etc.).</td>
+</tr>
+<tr class="even">
+<td><strong>DHCP client</strong></td>
+<td>Some clients overwrite the file directly with DHCP-provided
+servers.</td>
+</tr>
+</tbody>
+</table>
+<p>If your edits <strong>disappear</strong>, one of these is the cause.
+The correct fix depends on the manager:</p>
+<ul>
+<li><strong>NetworkManager</strong>: configure DNS on the connection
+(<code>nmcli connection modify name ipv4.dns "8.8.8.8 1.1.1.1"</code>).</li>
+<li><strong>systemd-resolved</strong>: edit
+<code>/etc/systemd/resolved.conf</code>.</li>
+<li><strong>resolvconf</strong>: put settings in
+<code>/etc/resolvconf/resolv.conf.d/base</code> (or
+<code>head</code>).</li>
+<li><strong>dhclient</strong>: set DNS via the DHCP server or in
+<code>/etc/dhcp/dhclient.conf</code>.</li>
+</ul>
+<hr />
+<h2 id="etcnsswitch.conf-the-name-service-switch">4.
+<code>/etc/nsswitch.conf</code> — The Name Service Switch</h2>
+<p>This file controls <strong>the order in which sources are
+consulted</strong> for each kind of lookup. It’s not just for hostnames
+— it also covers users, groups, and other databases.</p>
+<h3 id="format-2">Format</h3>
+<pre><code>passwd:    files
+group:     files
+shadow:    files
+
+hosts:     files dns
+networks:  files
+
+services:  files
+protocols: files</code></pre>
+<p>Each line has the form:</p>
+<pre><code>database: source1 source2 ...</code></pre>
+<h3 id="for-dns-client-behavior-the-line-that-matters-is-hosts">For DNS
+client behavior, the line that matters is <code>hosts:</code></h3>
+<pre><code>hosts:    files dns</code></pre>
+<p>means: “look in <code>/etc/hosts</code> first (<code>files</code>),
+and if not found, query DNS.” This is why edits to
+<code>/etc/hosts</code> work without any service restart.</p>
+<p>Other sources you might see on the <code>hosts:</code> line:</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>files</code></td>
+<td><code>/etc/hosts</code>.</td>
+</tr>
+<tr class="even">
+<td><code>dns</code></td>
+<td>DNS (<code>/etc/resolv.conf</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>mdns4</code> / <code>mdns4_minimal</code></td>
+<td>Multicast DNS (e.g. <code>.local</code> names, Avahi/Bonjour).</td>
+</tr>
+<tr class="even">
+<td><code>resolve</code></td>
+<td><code>systemd-resolved</code> lookups.</td>
+</tr>
+<tr class="odd">
+<td><code>myhostname</code></td>
+<td>Built-in module that always resolves the local hostname.</td>
+</tr>
+<tr class="even">
+<td><code>nis</code></td>
+<td>NIS server.</td>
+</tr>
+</tbody>
+</table>
+<p>A common modern line on systemd systems:</p>
+<pre><code>hosts:    files mdns4_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns</code></pre>
+<p>Reads as: try local files, then mDNS for <code>.local</code> names,
+then <code>systemd-resolved</code>, finally falling back to plain DNS.
+The exam doesn’t quiz on the bracketed action codes — recognizing
+<code>files</code> and <code>dns</code> is enough.</p>
+<hr />
+<h2 id="testing-client-side-resolution">5. Testing Client-Side
+Resolution</h2>
+<p>Three tools, three different scopes.</p>
+<h3 id="host-quick-lookup-talks-directly-to-dns"><code>host</code> —
+quick lookup, talks directly to DNS</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">host</span> example.com</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">host</span> example.com 8.8.8.8        <span class="co"># query a specific server</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">host</span> <span class="at">-t</span> MX example.com          <span class="co"># specific record type</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">host</span> 93.184.216.34              <span class="co"># reverse lookup</span></span></code></pre></div>
+<h3 id="dig-detailed-lookup-talks-directly-to-dns"><code>dig</code> —
+detailed lookup, talks directly to DNS</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> example.com</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> +short example.com</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> @8.8.8.8 example.com</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> example.com MX</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">dig</span> <span class="at">-x</span> 93.184.216.34            <span class="co"># reverse lookup</span></span></code></pre></div>
+<h3
+id="getent-hosts-what-the-system-actually-returns"><code>getent hosts</code>
+— what the <strong>system</strong> actually returns</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> hosts example.com</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> ahosts example.com</span></code></pre></div>
+<p><code>getent</code> goes through <code>/etc/nsswitch.conf</code>, so
+it sees <code>/etc/hosts</code> and any other configured source. If
+<code>host</code> and <code>dig</code> say one thing but
+<code>getent</code> says another, the answer is coming from
+<code>/etc/hosts</code> (or another non-DNS source).</p>
+<p>This is the key debugging insight from this objective:
+<strong><code>host</code> and <code>dig</code> test DNS;
+<code>getent</code> tests the system’s full resolution
+chain</strong>.</p>
+<h3 id="nslookup-legacy-alternative"><code>nslookup</code> — legacy
+alternative</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">nslookup</span> example.com</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">nslookup</span> example.com 8.8.8.8</span></code></pre></div>
+<p>Still works; <code>host</code> and <code>dig</code> are preferred
+today but <code>nslookup</code> is on the exam.</p>
+<hr />
+<h2 id="awareness-systemd-resolved">6. Awareness:
+<code>systemd-resolved</code></h2>
+<p><code>systemd-resolved</code> is the DNS client service shipped with
+systemd. Where it is enabled:</p>
+<ul>
+<li><code>/etc/resolv.conf</code> is a symlink to a file under
+<code>/run/systemd/resolve/</code>.</li>
+<li>The “real” resolver is at <code>127.0.0.53</code> — applications
+query it, and it forwards to the configured upstream servers.</li>
+<li>Its own configuration is
+<code>/etc/systemd/resolved.conf</code>.</li>
+<li>Inspect it with <code>resolvectl status</code>:</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">resolvectl</span> status              <span class="co"># show DNS servers, search domains, per-link config</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">resolvectl</span> query example.com</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">resolvectl</span> flush-caches        <span class="co"># clear the local DNS cache</span></span></code></pre></div>
+<p>You only need to <strong>recognize</strong> that this service exists
+for the exam, not configure it deeply.</p>
+<hr />
+<h2 id="quick-reference-for-the-exam">7. Quick Reference for the
+Exam</h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li><code>/etc/hosts</code> — static mappings.</li>
+<li><code>/etc/resolv.conf</code> — DNS servers and search domains.</li>
+<li><code>/etc/nsswitch.conf</code> — order of resolution sources.</li>
+<li><code>/etc/hostname</code> — local hostname (touched here in case of
+confusion with <code>hosts</code>).</li>
+</ul>
+<p><strong>Commands:</strong></p>
+<ul>
+<li><code>host</code></li>
+<li><code>dig</code></li>
+<li><code>nslookup</code> (legacy)</li>
+<li><code>getent hosts</code></li>
+</ul>
+<p><strong>Concepts:</strong></p>
+<ul>
+<li>The order: <code>/etc/hosts</code> (via <code>files</code>) before
+DNS, controlled by <code>nsswitch.conf</code>.</li>
+<li><code>search</code> vs <code>domain</code> in
+<code>resolv.conf</code>.</li>
+<li>Up to three <code>nameserver</code> entries.</li>
+<li><code>host</code>/<code>dig</code> test DNS; <code>getent</code>
+tests the system resolver.</li>
+<li><code>/etc/resolv.conf</code> is often auto-generated by
+NetworkManager, systemd-resolved, resolvconf, or a DHCP client.</li>
+</ul>
+<hr />
+<h2 id="likely-exam-questions-self-check">8. Likely Exam Questions
+(Self-Check)</h2>
+<ol type="1">
+<li><p><strong>Which file holds static hostname-to-IP mappings on a
+Linux client?</strong> <code>/etc/hosts</code>.</p></li>
+<li><p><strong>Which file lists the DNS servers used by the
+resolver?</strong> <code>/etc/resolv.conf</code>.</p></li>
+<li><p><strong>What is the maximum number of <code>nameserver</code>
+entries that <code>/etc/resolv.conf</code> will use?</strong>
+Three.</p></li>
+<li><p><strong>What is the difference between the <code>domain</code>
+and <code>search</code> directives in
+<code>/etc/resolv.conf</code>?</strong> <code>domain</code> sets a
+single default domain. <code>search</code> lists multiple suffixes to
+try. They are mutually exclusive — the last one in the file
+wins.</p></li>
+<li><p><strong>What is the role of <code>/etc/nsswitch.conf</code> for
+hostname resolution?</strong> It defines the order in which the resolver
+consults different sources. The <code>hosts:</code> line typically reads
+<code>files dns</code>, meaning <code>/etc/hosts</code> is checked
+before DNS.</p></li>
+<li><p><strong>You edit <code>/etc/hosts</code> to add a new mapping. Do
+you need to restart anything?</strong> No. The file is read on every
+lookup; changes take effect immediately.</p></li>
+<li><p><strong>You edit <code>/etc/resolv.conf</code> and the changes
+vanish after a few minutes. Why?</strong> Something is auto-generating
+the file — typically NetworkManager, <code>systemd-resolved</code>,
+<code>resolvconf</code>, or a DHCP client. Configure DNS through that
+tool instead.</p></li>
+<li><p><strong>Which tool tells you whether the answer is coming from
+<code>/etc/hosts</code> or from real DNS?</strong>
+<code>getent hosts</code> uses the full system resolver (and thus
+<code>/etc/hosts</code>), whereas <code>host</code> and <code>dig</code>
+go straight to DNS. Comparing the two reveals where the answer comes
+from.</p></li>
+<li><p><strong>How do you query a specific DNS server for an A record
+using <code>host</code>?</strong>
+<code>host example.com 8.8.8.8</code>.</p></li>
+<li><p><strong>How do you query a specific DNS server for an A record
+using <code>dig</code>?</strong>
+<code>dig @8.8.8.8 example.com</code>.</p></li>
+<li><p><strong>What does the line <code>hosts: files dns</code> in
+<code>/etc/nsswitch.conf</code> mean?</strong> For host lookups, consult
+<code>/etc/hosts</code> first (<code>files</code>), then fall back to
+DNS.</p></li>
+<li><p><strong>What does the <code>search example.com lan</code>
+directive cause when you run <code>ping web</code>?</strong> The
+resolver tries <code>web.example.com</code> first, then
+<code>web.lan</code>.</p></li>
+<li><p><strong>What is the loopback address typically listed for
+<code>localhost</code> in <code>/etc/hosts</code>?</strong>
+<code>127.0.0.1</code> for IPv4 and <code>::1</code> for IPv6.</p></li>
+<li><p><strong>What systemd service may make
+<code>/etc/resolv.conf</code> a symlink to a file under
+<code>/run/systemd/resolve/</code>?</strong>
+<code>systemd-resolved</code>.</p></li>
+<li><p><strong>In <code>/etc/hosts</code>, a line is
+<code>192.168.1.50 fileserver fileserver.lan</code>. Which name is the
+canonical name?</strong> <code>fileserver</code> — the first hostname on
+the line. <code>fileserver.lan</code> is an alias.</p></li>
+</ol>
+</body>
+</html>
