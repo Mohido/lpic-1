@@ -21,14 +21,15 @@ jobs:
 
       - name: Convert markdown to HTML
         run: |
+          rm -rf html 
           rm -rf .html
-          mkdir -p .html
+          mkdir -p html
 
           find . -name "*.md" \
             -not -path "./.github/*" \
-            -not -path "./.html/*" | while read -r md; do
+            -not -path "./html/*" | while read -r md; do
             rel="${md#./}"
-            out=".html/${rel%.md}.html"
+            out="html/${rel%.md}.html"
             mkdir -p "$(dirname "$out")"
             title=$(head -n 1 "$md" | sed 's/^#* *//')
             pandoc "$md" \
@@ -45,12 +46,12 @@ jobs:
           import html
 
           pages = []
-          for root, dirs, files in os.walk(".html"):
+          for root, dirs, files in os.walk("html"):
               dirs[:] = sorted(d for d in dirs)
               for f in sorted(files):
-                  if f.endswith(".html"):
+                  if f.endswith("html"):
                       path = os.path.join(root, f)
-                      rel  = path[len(".html/"):]
+                      rel  = path[len("html/"):]
                       label = os.path.splitext(rel)[0].replace("/", " / ").replace("-", " ").replace("_", " ")
                       pages.append((rel, label))
 
@@ -83,7 +84,7 @@ jobs:
           </html>
           """
 
-          with open(".html/index.html", "w") as fh:
+          with open("html/index.html", "w") as fh:
               fh.write(index)
 
           print(f"index.html written with {len(pages)} entries")
@@ -93,7 +94,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .html/
+          git add html/
           git diff --cached --quiet && echo "No changes" && exit 0
           git commit -m "ci: rebuild HTML from markdown [skip ci]"
           git push
